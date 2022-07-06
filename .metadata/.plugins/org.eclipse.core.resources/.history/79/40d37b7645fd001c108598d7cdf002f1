@@ -1,0 +1,5 @@
+ackage br.com.castgroup.cursos;
+
+public interface CursoRepository {
+
+}

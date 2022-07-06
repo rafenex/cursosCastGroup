@@ -1,0 +1,8 @@
+package br.com.castgroup.cursos.entities;
+
+import java.util.List;
+
+public class Categoria {
+	private List<String> categorias;
+
+}
