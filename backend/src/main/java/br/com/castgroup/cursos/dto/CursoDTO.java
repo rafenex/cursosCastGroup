@@ -11,7 +11,6 @@ public class CursoDTO {
 	private String categoria;
 	
 	public CursoDTO() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	

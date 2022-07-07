@@ -1,6 +1,7 @@
 package br.com.castgroup.cursos.entities;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
