@@ -1,0 +1,36 @@
+package br.com.castgroup.cursos.service;
+
+import java.time.LocalDate;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.stereotype.Service;
+
+import br.com.castgroup.cursos.form.FormCadastroCurso;
+import br.com.castgroup.cursos.repository.CategoriaRepository;
+import br.com.castgroup.cursos.repository.CursoRepository;
+
+@Service
+public class CursoService {
+	
+
+	public boolean isValid(BodyBuilder resposta, FormCadastroCurso request, CursoRepository cursoRepository) {
+		if (request.getInicio().isBefore(LocalDate.now())) {
+			System.out.println("data menor que a de hoje");
+			return false;							
+		} 
+		System.out.println("Contador: " + cursoRepository.contador(request.getInicio(), request.getTermino()));	
+		if(cursoRepository.contador(request.getInicio(), request.getTermino())> 0) {	
+			System.out.println("ja existe curso nessa data");
+			resposta.body("ja existe curso nessa data");
+			return false;										
+		}
+		System.out.println("curso cadastrado com sucesso");
+		return true;
+	}
+	
+
+	
+
+}

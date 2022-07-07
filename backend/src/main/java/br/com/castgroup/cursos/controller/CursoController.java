@@ -1,13 +1,9 @@
 package br.com.castgroup.cursos.controller;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,10 +24,14 @@ import br.com.castgroup.cursos.form.FormCadastroCurso;
 import br.com.castgroup.cursos.form.FormUpdateCurso;
 import br.com.castgroup.cursos.repository.CategoriaRepository;
 import br.com.castgroup.cursos.repository.CursoRepository;
+import br.com.castgroup.cursos.service.CursoService;
 
 @RestController
 @RequestMapping("/api/cursos")
 public class CursoController {
+
+	@Autowired
+	CursoService cursoService;
 
 	@Autowired
 	CursoRepository cursoRepository;
@@ -39,41 +39,17 @@ public class CursoController {
 	@Autowired
 	CategoriaRepository categoriaRepository;
 
-
 	@PostMapping
-	public ResponseEntity<String> cadastrar(@RequestBody FormCadastroCurso request) {
-		try {
-			String body = null;
-			Curso curso = request.converter(categoriaRepository, cursoRepository, body);	
-			curso.setQuantidadeAlunos(request.getQuantidade());
-			System.out.println(cursoRepository.contador(request.getInicio(), request.getTermino()));			
-			if (request.getInicio().isBefore(LocalDate.now())) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-						.body("Não é permitida a inclusão de cursos com a data de início menor que a data atual.");				
-			} 
-			System.out.println("Contador: " + cursoRepository.contador(request.getInicio(), request.getTermino()));	
-			if(cursoRepository.contador(request.getInicio(), request.getTermino())> 0) {									
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-							.body("Existe(m) curso(s) planejados(s) dentro do período informado.");										
+	public ResponseEntity<String> cadastrar(@RequestBody FormCadastroCurso request) {	
+			if(cursoService.isValid(request, cursoRepository)) {		
+				Curso curso = request.converter(categoriaRepository, cursoRepository);	
+				cursoRepository.save(curso);
+				return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.mensagem());
+			} else {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cursoService.mensagem());
 			}
-			
-			cursoRepository.save(curso);
-			return ResponseEntity.status(HttpStatus.CREATED).body("Curso cadastrado com sucesso");
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + e.getMessage());
-		}
+
 	}
-	
-	
-
-		//@PostMapping(value="/pessoas")
-		//public List<Pessoa> add(@RequestBody Pessoa pessoa){		
-		//	pessoaRepository.save(pessoa);		
-		//	return pessoaRepository.findAll();	
-		//}
-	
-
-
 
 	@GetMapping(value = "/{id_curso}")
 	public ResponseEntity<?> findById(@PathVariable("id_curso") Integer id_curso) {
@@ -93,8 +69,6 @@ public class CursoController {
 		}
 	}
 
-	
-
 	@GetMapping
 	public ResponseEntity<List<CursoDTO>> listarCursos() {
 		List<CursoDTO> response = new ArrayList<>();
@@ -111,8 +85,7 @@ public class CursoController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
-	
+
 	@GetMapping(value = "/nome/{descricao}")
 	public ResponseEntity<?> findByDescricao(@PathVariable("descricao") String descricao) {
 		List<Curso> item = cursoRepository.findByDescricao(descricao);
@@ -134,7 +107,6 @@ public class CursoController {
 		}
 	}
 
-	
 //	@GetMapping(value = "/data/{inicio}/{termino}")
 //	public ResponseEntity<?> findByData(@PathVariable("inicio")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio, 
 //										@PathVariable("termino") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {
@@ -157,15 +129,12 @@ public class CursoController {
 //		}
 //	}
 //	
-	
-	
+
 	@GetMapping(value = "/data/{inicio}/{termino}")
-	public List<Curso> findByData(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio, 
-										@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {
+	public List<Curso> findByData(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
+			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {
 		return cursoRepository.findByInicioBetween(inicio, termino);
 	}
-	
-	
 
 	@DeleteMapping(value = "/{id_curso}")
 	public ResponseEntity<String> deleteById(@PathVariable("id_curso") Integer id_curso) {
@@ -182,7 +151,6 @@ public class CursoController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
 		}
 	}
-	
 
 	@SuppressWarnings("deprecation")
 	@PutMapping(value = "/{id_curso}")
