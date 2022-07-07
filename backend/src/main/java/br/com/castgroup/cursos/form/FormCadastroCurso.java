@@ -61,7 +61,7 @@ public class FormCadastroCurso {
 	}
 
 	@SuppressWarnings("deprecation")
-	public Curso converter(CategoriaRepository categoriaRepository, CursoRepository cursoRepository) {
+	public Curso converter(CategoriaRepository categoriaRepository) {
 		Curso curso = new Curso();
 
 		curso.setCategoria(categoriaRepository.getById(idCategoria));

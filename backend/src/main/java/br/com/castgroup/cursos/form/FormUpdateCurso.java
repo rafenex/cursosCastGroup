@@ -2,6 +2,10 @@ package br.com.castgroup.cursos.form;
 
 import java.time.LocalDate;
 
+import br.com.castgroup.cursos.entities.Curso;
+import br.com.castgroup.cursos.repository.CategoriaRepository;
+import br.com.castgroup.cursos.repository.CursoRepository;
+
 public class FormUpdateCurso {
 	private String descricao;
 	private LocalDate inicio;
@@ -45,6 +49,9 @@ public class FormUpdateCurso {
 		this.quantidade = quantidade;
 	}
 
+
+
+
 	public Integer getIdCategoria() {
 		return idCategoria;
 	}
@@ -52,7 +59,19 @@ public class FormUpdateCurso {
 	public void setIdCategoria(Integer idCategoria) {
 		this.idCategoria = idCategoria;
 	}
-	
+
+	@SuppressWarnings("deprecation")
+	public Curso converter(CategoriaRepository categoriaRepository, Curso curso) {
+		curso.setCategoria(categoriaRepository.getById(idCategoria));
+		curso.setDescricao(descricao);
+		curso.setInicio(inicio);
+		curso.setQuantidadeAlunos(quantidade);
+		curso.setTermino(termino);
+		return curso;
+	}
+
 	
 
+	
+	
 }

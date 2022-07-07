@@ -1,7 +1,6 @@
 package br.com.castgroup.cursos.controller;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.castgroup.cursos.dto.CursoDTO;
 import br.com.castgroup.cursos.entities.Curso;
 import br.com.castgroup.cursos.form.FormCadastroCurso;
 import br.com.castgroup.cursos.form.FormUpdateCurso;
@@ -40,15 +38,37 @@ public class CursoController {
 	CategoriaRepository categoriaRepository;
 
 	@PostMapping
-	public ResponseEntity<String> cadastrar(@RequestBody FormCadastroCurso request) {	
-			if(cursoService.isValid(request, cursoRepository)) {		
-				Curso curso = request.converter(categoriaRepository, cursoRepository);	
-				cursoRepository.save(curso);
-				return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.mensagem());
+	public ResponseEntity<String> cadastrar(@RequestBody FormCadastroCurso request) {
+		if (!cursoService.isValid(request, cursoRepository)) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cursoService.mensagem());
+		}
+		Curso curso = request.converter(categoriaRepository);
+		cursoRepository.save(curso);
+		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.mensagem());
+	}
+	
+	@SuppressWarnings("deprecation")
+	@PutMapping(value = "/{id_curso}")
+	public ResponseEntity<?> update(@PathVariable("id_curso") Integer id_curso, @RequestBody FormUpdateCurso request) {
+		try {
+			Optional<Curso> item = cursoRepository.findById(id_curso);
+			if (item.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
 			} else {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cursoService.mensagem());
+				
+				Curso curso = item.get();
+		
+				if(!cursoService.isValid(request, cursoRepository, curso)) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cursoService.mensagem());
+				}
+				curso = request.converter(categoriaRepository, curso);
+			
+				cursoRepository.save(curso);
+				return ResponseEntity.status(HttpStatus.OK).body("Curso atualizado");
 			}
-
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+		}
 	}
 
 	@GetMapping(value = "/{id_curso}")
@@ -56,79 +76,21 @@ public class CursoController {
 		Optional<Curso> item = cursoRepository.findById(id_curso);
 		if (item.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
-		} else {
-			CursoDTO response = new CursoDTO();
-			Curso curso = item.get();
-			response.setId_curso(curso.getId_curso());
-			response.setCategoria(curso.getCategoria().getCategoria());
-			response.setDescricao(curso.getDescricao());
-			response.setInicio(curso.getInicio());
-			response.setQuantidade(curso.getQuantidadeAlunos());
-			response.setTermino(curso.getTermino());
-			return ResponseEntity.status(HttpStatus.OK).body(response);
 		}
+		return ResponseEntity.status(HttpStatus.OK).body(item);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<CursoDTO>> listarCursos() {
-		List<CursoDTO> response = new ArrayList<>();
-
-		for (Curso curso : cursoRepository.findAll()) {
-			CursoDTO cursoDto = new CursoDTO();
-			cursoDto.setId_curso(curso.getId_curso());
-			cursoDto.setCategoria(curso.getCategoria().getCategoria());
-			cursoDto.setDescricao(curso.getDescricao());
-			cursoDto.setInicio(curso.getInicio());
-			cursoDto.setQuantidade(curso.getQuantidadeAlunos());
-			cursoDto.setTermino(curso.getTermino());
-			response.add(cursoDto);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+	public ResponseEntity<List<Curso>> listarCursos() {
+		return ResponseEntity.status(HttpStatus.OK).body(cursoRepository.findAll());
 	}
 
 	@GetMapping(value = "/nome/{descricao}")
 	public ResponseEntity<?> findByDescricao(@PathVariable("descricao") String descricao) {
-		List<Curso> item = cursoRepository.findByDescricao(descricao);
-		List<CursoDTO> response = new ArrayList<>();
-		if (item.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
-		} else {
-			for (Curso curso : cursoRepository.findByDescricao(descricao)) {
-				CursoDTO cursoDto = new CursoDTO();
-				cursoDto.setId_curso(curso.getId_curso());
-				cursoDto.setCategoria(curso.getCategoria().getCategoria());
-				cursoDto.setDescricao(curso.getDescricao());
-				cursoDto.setInicio(curso.getInicio());
-				cursoDto.setQuantidade(curso.getQuantidadeAlunos());
-				cursoDto.setTermino(curso.getTermino());
-				response.add(cursoDto);
-			}
-			return ResponseEntity.status(HttpStatus.OK).body(response);
-		}
+		return ResponseEntity.status(HttpStatus.OK).body(cursoRepository.findByDescricao(descricao));
+
 	}
 
-//	@GetMapping(value = "/data/{inicio}/{termino}")
-//	public ResponseEntity<?> findByData(@PathVariable("inicio")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio, 
-//										@PathVariable("termino") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {
-//		List<Curso> item = cursoRepository.findByInicioBetween(inicio, termino);
-//		List<CursoDTO> response = new ArrayList<>();
-//		if (item.isEmpty()) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
-//		} else {
-//			for (Curso curso : cursoRepository.findByInicioBetween(inicio, termino)) {
-//				CursoDTO cursoDto = new CursoDTO();
-//				cursoDto.setId_curso(curso.getId_curso());
-//				cursoDto.setCategoria(curso.getCategoria().getCategoria());
-//				cursoDto.setDescricao(curso.getDescricao());
-//				cursoDto.setInicio(curso.getInicio());
-//				cursoDto.setQuantidade(curso.getQuantidadeAlunos());
-//				cursoDto.setTermino(curso.getTermino());
-//				response.add(cursoDto);
-//			}
-//			return ResponseEntity.status(HttpStatus.OK).body(response);
-//		}
-//	}
-//	
 
 	@GetMapping(value = "/data/{inicio}/{termino}")
 	public List<Curso> findByData(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
@@ -152,25 +114,4 @@ public class CursoController {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	@PutMapping(value = "/{id_curso}")
-	public ResponseEntity<?> update(@PathVariable("id_curso") Integer id_curso, @RequestBody FormUpdateCurso request) {
-		try {
-			Optional<Curso> item = cursoRepository.findById(id_curso);
-			if (item.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
-			} else {
-				Curso curso = item.get();
-				curso.setCategoria(categoriaRepository.getById(request.getIdCategoria()));
-				curso.setDescricao(request.getDescricao());
-				curso.setTermino(request.getTermino());
-				curso.setInicio(request.getInicio());
-				curso.setQuantidadeAlunos(request.getQuantidade());
-				cursoRepository.save(curso);
-				return ResponseEntity.status(HttpStatus.OK).body("Curso atualizado");
-			}
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-		}
-	}
 }
