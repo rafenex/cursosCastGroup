@@ -53,7 +53,13 @@ public class CursoController {
 						.body("Não é permitida a inclusão de cursos com a data de início menor que a data atual.");				
 			} 
 			for(Curso curso1 : cursoRepository.findAll()) {
-				if (request.getInicio().isBefore(curso1.getInicio()) && (request.getTermino().isAfter(curso1.getInicio()))) {
+				if(
+					(request.getInicio().isBefore(curso1.getInicio()) && (request.getTermino().isAfter(curso1.getInicio())))
+				||  (request.getInicio().isBefore(curso1.getTermino()) && (request.getTermino().isAfter(curso1.getTermino())))
+				|| (request.getInicio().isAfter(curso1.getInicio()) && (request.getTermino().isBefore(curso1.getTermino())))
+				|| (request.getInicio().isEqual(curso1.getInicio()) || (request.getTermino().isEqual(curso1.getTermino())))
+				
+						) {								
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 							.body("Existe(m) curso(s) planejados(s) dentro do período informado.");			
 				}									
@@ -91,6 +97,25 @@ public class CursoController {
 		} else {
 			CursoDTO response = new CursoDTO();
 			Curso curso = item.get();
+			response.setId_curso(curso.getId_curso());
+			response.setCategoria(curso.getCategoria().getCategoria());
+			response.setDescricao(curso.getDescricao());
+			response.setInicio(curso.getInicio());
+			response.setQuantidade(curso.getQuantidadeAlunos());
+			response.setTermino(curso.getTermino());
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		}
+	}
+	
+	@GetMapping(value = "/nome/{descricao}")
+	public ResponseEntity<?> findById(@PathVariable("descricao") String descricao) {
+		Optional<Curso> item = cursoRepository.findByDescricao(descricao);
+		if (item.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
+		} else {
+			CursoDTO response = new CursoDTO();
+			Curso curso = item.get();
+			response.setId_curso(curso.getId_curso());
 			response.setCategoria(curso.getCategoria().getCategoria());
 			response.setDescricao(curso.getDescricao());
 			response.setInicio(curso.getInicio());
