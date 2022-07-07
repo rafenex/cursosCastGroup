@@ -1,8 +1,13 @@
 package br.com.castgroup.cursos.controller;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,22 +40,30 @@ public class CursoController {
 
 	@SuppressWarnings("deprecation")
 	@PostMapping
-	public ResponseEntity<String> cadastrar(@RequestBody FormCadastroCurso request){
+	public ResponseEntity<String> cadastrar(@RequestBody FormCadastroCurso request) {
 		try {
-		
-	
-			Curso curso = new Curso();
-			curso.setCategoria(categoriaRepository.getById(request.getIdCategoria()));		
+			Curso curso = new Curso();			
+			curso.setCategoria(categoriaRepository.getById(request.getIdCategoria()));
 			curso.setDescricao(request.getDescricao());
 			curso.setTermino(request.getTermino());
 			curso.setInicio(request.getInicio());
-			curso.setQuantidadeAlunos(request.getQuantidade());			
-			cursoRepository.save(curso);			
+			curso.setQuantidadeAlunos(request.getQuantidade());
+			if (request.getTermino().isBefore(request.getInicio())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body("Não é permitida a inclusão de cursos com a data de início menor que a data atual.");				
+			} 
+			for(Curso curso1 : cursoRepository.findAll()) {
+				if (request.getInicio().isBefore(curso1.getInicio()) && (request.getTermino().isAfter(curso1.getInicio()))) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+							.body("Existe(m) curso(s) planejados(s) dentro do período informado.");			
+				}									
+			}
+			
+			cursoRepository.save(curso);
 			return ResponseEntity.status(HttpStatus.CREATED).body("Curso cadastrado com sucesso");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + e.getMessage());
 		}
-		
 	}
 
 	@GetMapping

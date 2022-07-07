@@ -28,17 +28,13 @@ public class Curso {
 	private LocalDate termino;
 	private Integer quantidadeAlunos;
 	
-	
-
-
 	@ManyToOne
 	private Categoria categoria;
 	
 	public Curso() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+		
 
 	public Integer getId_curso() {
 		return id_curso;
@@ -75,11 +71,9 @@ public class Curso {
 	}
 
 
-
 	public void setTermino(LocalDate termino) {
 		this.termino = termino;
 	}
-
 
 
 	public Integer getQuantidadeAlunos() {
