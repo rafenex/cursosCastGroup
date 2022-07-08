@@ -1,0 +1,48 @@
+package br.com.castgroup.cursos.entities;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
+public class Usuario {
+	@Id
+	private Integer id_usuario = 1;
+	private String nome_usuario;
+	
+	
+	
+	
+	public Usuario(Integer id_usuario, String nome_usuario) {
+		super();
+		this.id_usuario = id_usuario;
+		this.nome_usuario = nome_usuario;
+	}
+
+
+	public Usuario() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public Integer getId_usuario() {
+		return id_usuario;
+	}
+
+
+	public void setId_usuario(Integer id_usuario) {
+		this.id_usuario = id_usuario;
+	}
+
+
+	public String getNome_usuario() {
+		return nome_usuario;
+	}
+
+
+	public void setNome_usuario(String nome_usuario) {
+		this.nome_usuario = nome_usuario;
+	}
+	
+	
+
+}

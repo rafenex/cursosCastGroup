@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import br.com.castgroup.cursos.entities.Curso;
 import br.com.castgroup.cursos.repository.CategoriaRepository;
-import br.com.castgroup.cursos.repository.CursoRepository;
 
 public class FormUpdateCurso {
 	private String descricao;

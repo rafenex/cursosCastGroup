@@ -1,0 +1,9 @@
+package br.com.castgroup.cursos.entities;
+
+public enum StatusCruso {
+	
+	NAO_FINALIZADO,
+	FINALIZADO
+
+
+}

@@ -17,22 +17,43 @@ public class Curso {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id_curso;
 
-
+	@NotNull
 	private String descricao;
 	
 	@NotNull
 	private LocalDate inicio;
 	@NotNull
 	private LocalDate termino;
+	
+	private Boolean finalizado = false;
+
 	private Integer quantidadeAlunos;
 	
 	@ManyToOne
 	private Categoria categoria;
 	
+
+	private LocalDate inclusao;
+	
 	public Curso() {
-		// TODO Auto-generated constructor stub
+
 	}
-		
+
+	public LocalDate getInclusao() {
+		return inclusao;
+	}
+
+	public void setInclusao(LocalDate inclusao) {
+		this.inclusao = LocalDate.now();
+	}
+
+	public Boolean getFinalizado() {
+		return finalizado;
+	}
+
+	public void setFinalizado(Boolean finalizado) {
+		this.finalizado = finalizado;
+	}
 
 	public Integer getId_curso() {
 		return id_curso;

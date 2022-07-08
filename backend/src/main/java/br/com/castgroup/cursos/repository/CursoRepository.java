@@ -14,6 +14,7 @@ public interface CursoRepository extends JpaRepository<Curso, Integer>{
 	List<Curso> findByDescricao(String descricao);
 	
 	List<Curso> findByInicioBetween(LocalDate dataInicioStart, LocalDate dataInicoEnd);
+	List<Curso> findByTerminoBetween(LocalDate dataInicioStart, LocalDate dataInicoEnd);
 	
 	@Query("select count(*) from Curso c where (:inicio <= c.inicio and :termino >= c.inicio)"
 			+ "OR"
@@ -21,7 +22,6 @@ public interface CursoRepository extends JpaRepository<Curso, Integer>{
 			+ "OR"
 			+ "								   (:inicio >= c.inicio and :termino <= c.termino)")	
 	Integer contador(LocalDate inicio, LocalDate termino);
-
 	
 
 }

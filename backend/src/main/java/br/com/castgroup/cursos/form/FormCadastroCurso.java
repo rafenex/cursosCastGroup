@@ -4,14 +4,15 @@ import java.time.LocalDate;
 
 import br.com.castgroup.cursos.entities.Curso;
 import br.com.castgroup.cursos.repository.CategoriaRepository;
-import br.com.castgroup.cursos.repository.CursoRepository;
 
 public class FormCadastroCurso {
 	private String descricao;
 	private LocalDate inicio;
 	private LocalDate termino;
+	private LocalDate inclusao;
 	private Integer quantidade;
 	private Integer idCategoria;
+	public Boolean finalizado;
 	
 	public FormCadastroCurso() {
 		// TODO Auto-generated constructor stub
@@ -49,15 +50,22 @@ public class FormCadastroCurso {
 		this.quantidade = quantidade;
 	}
 
-
-
-
 	public Integer getIdCategoria() {
 		return idCategoria;
 	}
 
 	public void setIdCategoria(Integer idCategoria) {
 		this.idCategoria = idCategoria;
+	}
+	
+	
+
+	public LocalDate getInclusao() {
+		return inclusao;
+	}
+
+	public void setInclusao(LocalDate inclusao) {
+		this.inclusao = inclusao;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -69,6 +77,8 @@ public class FormCadastroCurso {
 		curso.setInicio(inicio);
 		curso.setQuantidadeAlunos(quantidade);
 		curso.setTermino(termino);
+		curso.setInclusao(inclusao);
+		curso.setFinalizado(false);
 		return curso;
 	}
 	
