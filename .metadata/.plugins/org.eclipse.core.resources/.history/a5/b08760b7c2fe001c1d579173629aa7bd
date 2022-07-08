@@ -1,0 +1,101 @@
+package br.com.castgroup.cursos.service;
+
+import java.time.LocalDate;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.castgroup.cursos.entities.Curso;
+import br.com.castgroup.cursos.entities.Log;
+import br.com.castgroup.cursos.repository.CategoriaRepository;
+import br.com.castgroup.cursos.repository.CursoRepository;
+import br.com.castgroup.cursos.repository.LogRepository;
+import br.com.castgroup.cursos.repository.UsuarioRepository;
+
+@Service
+public class CursoService {
+	
+	@Autowired
+	UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	LogRepository logRepository;
+
+	@Autowired
+	CursoRepository cursoRepository;
+
+	@Autowired
+	CategoriaRepository categoriaRepository;
+	
+	
+	private String message = null;
+	
+	public String mensagem() {
+		return message;
+	}
+
+	
+	
+	@Transactional
+	public void cadastrar(Curso curso) {
+		validaData(curso);
+		finalizado(curso);
+		Log log = new Log(null,LocalDate.now(),LocalDate.now(), curso, usuarioRepository.getById(1));
+		logRepository.save(log);		
+		cursoRepository.save(curso);
+	}
+	
+	private void validaData(Curso request) {
+		if (request.getInicio().isAfter(request.getTermino())) {
+			message = "Inicio depois do fim";
+			throw new RuntimeException("Inicio depois do fim");
+		}
+		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 0) {
+			message = "Já existe curso nessa data";
+			throw new RuntimeException("Já existe curso nessa data");			
+		}
+	}
+	
+	public void finalizado(Curso curso) {
+		if (curso.getTermino().isBefore(LocalDate.now())) {
+			curso.setFinalizado(true);			
+		} else {
+			curso.setFinalizado(false);
+		}		
+	}
+
+
+
+
+	public boolean isValid(Curso request, CursoRepository cursoRepository, Curso curso) {
+
+		if((request.getInicio().isEqual(curso.getInicio())&& (request.getTermino().isEqual(curso.getTermino())))) {
+			return true;
+		}
+		
+		if (request.getInicio().isBefore(LocalDate.now())) {
+			message = "data menor que a de hoje";
+			System.out.println(message);
+			return false;
+		}
+		if (request.getInicio().isAfter(request.getTermino())) {
+			message = "data de termino anterior a de inicio";
+			System.out.println(message);
+			return false;
+		}
+
+		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 0) {
+			message = "Existe(m) curso(s) planejados(s) dentro do período informado.";
+			System.out.println(message);
+			return false;
+		}
+
+		message = "curso cadastrado com sucesso";
+		System.out.println("curso cadastrado com sucesso");
+		return true;
+	}
+	
+
+}

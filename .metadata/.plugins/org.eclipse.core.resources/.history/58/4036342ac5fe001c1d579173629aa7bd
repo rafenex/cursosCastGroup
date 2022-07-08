@@ -1,0 +1,69 @@
+package br.com.castgroup.cursos.service;
+
+import java.time.LocalDate;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.castgroup.cursos.entities.Curso;
+import br.com.castgroup.cursos.entities.Log;
+import br.com.castgroup.cursos.repository.CategoriaRepository;
+import br.com.castgroup.cursos.repository.CursoRepository;
+import br.com.castgroup.cursos.repository.LogRepository;
+import br.com.castgroup.cursos.repository.UsuarioRepository;
+
+@Service
+public class CursoService {
+	
+	@Autowired
+	UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	LogRepository logRepository;
+
+	@Autowired
+	CursoRepository cursoRepository;
+
+	@Autowired
+	CategoriaRepository categoriaRepository;
+	
+	
+	private String message = null;
+	
+	public String mensagem() {
+		return message;
+	}
+
+	
+	
+	@Transactional
+	public void cadastrar(Curso curso) {
+		validaData(curso);
+		finalizado(curso);
+		Log log = new Log(null,LocalDate.now(),LocalDate.now(), curso, usuarioRepository.getById(1));
+		curso.setInclusao(LocalDate.now());
+		logRepository.save(log);		
+		cursoRepository.save(curso);
+	}
+	
+	private void validaData(Curso request) {
+		if (request.getInicio().isAfter(request.getTermino())) {
+			throw new RuntimeException("Inicio depois do fim");
+		}
+		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 0) {
+			throw new RuntimeException("Já existe curso nessa data");			
+		}
+	}
+	
+	public void finalizado(Curso curso) {
+		if (curso.getTermino().isBefore(LocalDate.now())) {
+			curso.setFinalizado(true);			
+		} else {
+			curso.setFinalizado(false);
+		}		
+	}
+
+
+}

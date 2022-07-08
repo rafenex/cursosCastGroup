@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.castgroup.cursos.entities.Curso;
 import br.com.castgroup.cursos.entities.Log;
-import br.com.castgroup.cursos.form.FormCadastroCurso;
-import br.com.castgroup.cursos.form.FormUpdateCurso;
 import br.com.castgroup.cursos.repository.CategoriaRepository;
 import br.com.castgroup.cursos.repository.CursoRepository;
 import br.com.castgroup.cursos.repository.LogRepository;
@@ -35,103 +34,65 @@ public class CursoController {
 
 	@Autowired
 	CursoService cursoService;
-	
-	@Autowired
-	UsuarioRepository usuarioRepository;
-	
-	@Autowired
-	LogRepository logRepository;
 
-	@Autowired
-	CursoRepository cursoRepository;
-
-	@Autowired
-	CategoriaRepository categoriaRepository;
-
-	@Transactional
-	@PostMapping
-	public ResponseEntity<String> cadastrar(@RequestBody FormCadastroCurso request) {
-		if (!cursoService.isValid(request, cursoRepository)) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cursoService.mensagem());
-		}
-		Curso curso = request.converter(categoriaRepository);
-		Log log = new Log(null,LocalDate.now(),LocalDate.now(), curso, usuarioRepository.getById(1));
-		logRepository.save(log);
-		cursoRepository.save(curso);
-		return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.mensagem());
-	}
-	
-	@Transactional
-	@PutMapping(value = "/{id_curso}")
-	public ResponseEntity<?> update(@PathVariable("id_curso") Integer id_curso, @RequestBody FormUpdateCurso request) {
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String>cadastrar(@RequestBody Curso request){
 		try {
-			Optional<Curso> item = cursoRepository.findById(id_curso);
-			if (item.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
-			} else {				
-				Curso curso = item.get();		
-				if(!cursoService.isValid(request, cursoRepository, curso)) {
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cursoService.mensagem());
-				}
-				curso = request.converter(categoriaRepository, curso);			
-				cursoRepository.save(curso);
-				Log log = new Log(null,curso.getInclusao(),LocalDate.now(), curso, usuarioRepository.getById(1));
-				logRepository.save(log);
-				return ResponseEntity.status(HttpStatus.OK).body("Curso atualizado");
-			}
+			cursoService.cadastrarCurso(request);
+			return ResponseEntity.status(HttpStatus.CREATED).body("Curso cadastrado com sucesso");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
+	}
+	
+	@PutMapping(value = "/{id_curso}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String>atualizar(@PathVariable("id_curso") Integer id_curso, @RequestBody Curso request){
+		try {
+			cursoService.atualizarCurso(request, id_curso);
+			return ResponseEntity.status(HttpStatus.CREATED).body("Curso atualizado com sucesso");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+	
+	@GetMapping(value = "/data/{inicio}/{termino}")
+	public List<Curso> findByData(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
+			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {		
+		return cursoService.listarPorData(inicio, termino);
+	}
+	
+	@GetMapping(value = "/{id_curso}")
+	public ResponseEntity<?> findById(@PathVariable("id_curso") Integer id_curso) {		
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(cursoService.acharPorId(id_curso));			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}		
 	}
 
-	@GetMapping(value = "/{id_curso}")
-	public ResponseEntity<?> findById(@PathVariable("id_curso") Integer id_curso) {
-		Optional<Curso> item = cursoRepository.findById(id_curso);
-		if (item.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(item);
-	}
 
 	@GetMapping
-	public ResponseEntity<List<Curso>> listarCursos() {
-		return ResponseEntity.status(HttpStatus.OK).body(cursoRepository.findAll());
+	public List<Curso> listarCursos() {		
+		return cursoService.acharTodos();
 	}
 
 	@GetMapping(value = "/nome/{descricao}")
-	public ResponseEntity<?> findByDescricao(@PathVariable("descricao") String descricao) {
-		return ResponseEntity.status(HttpStatus.OK).body(cursoRepository.findByDescricao(descricao));
-
+	public ResponseEntity<List<Curso>> findByDescricao(@PathVariable("descricao") String descricao) {
+		return ResponseEntity.status(HttpStatus.OK).body(cursoService.acharPorDescricao(descricao));
 	}
+	
+	
 
-
-	@GetMapping(value = "/data/{inicio}/{termino}")
-	public List<Curso> findByData(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
-			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {
-		return cursoRepository.findByInicioBetween(inicio, termino);
-	}
-
-	@Transactional
 	@DeleteMapping(value = "/{id_curso}")
-	public ResponseEntity<String> deleteById(@PathVariable("id_curso") Integer id_curso) {
+	public ResponseEntity<String> deleteById(@PathVariable("id_curso") Integer id_curso) {		
 		try {
-			Optional<Curso> item = cursoRepository.findById(id_curso);
-			if (item.isEmpty()) {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Curso não encontrado");
-			} else {
-				Curso curso = item.get();
-				cursoService.finalizado(curso);
-				if (curso.getFinalizado()) {					
-					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Curso finalizado não pode ser excluido");
-				}
-				Log log = new Log(null,curso.getInclusao(),LocalDate.now(), curso, usuarioRepository.getById(1));
-				logRepository.save(log);
-				cursoRepository.delete(curso);
-				return ResponseEntity.status(HttpStatus.OK).body("Curso deletado com sucesso");
-			}
+			cursoService.deletarCursoPorId(id_curso);
+			return ResponseEntity.status(HttpStatus.OK).body("Curso deletado com sucesso");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
+		
+		
 	}
 
 }
