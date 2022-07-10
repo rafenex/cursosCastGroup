@@ -7,8 +7,6 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import br.com.castgroup.cursos.entities.Categoria;
@@ -33,6 +31,9 @@ public class CursoService {
 
 	@Autowired
 	CategoriaRepository categoriaRepository;
+	
+
+	
 
 	private String message = null;
 
@@ -45,6 +46,7 @@ public class CursoService {
 		validaData(curso);
 		existeCategoria(curso, categoriaRepository);
 		existeDescricao(curso, cursoRepository);
+		@SuppressWarnings("deprecation")
 		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso, usuarioRepository.getById(1));
 		curso.setInclusao(LocalDate.now());
 		logRepository.save(log);
@@ -104,6 +106,7 @@ public class CursoService {
 		converter(request, curso);
 		validaDataUpdate(curso);
 		existeCategoria(curso, categoriaRepository);
+		@SuppressWarnings("deprecation")
 		Log log = new Log(null, curso.getInclusao(), LocalDate.now(), curso, usuarioRepository.getById(1));
 		logRepository.save(log);
 		cursoRepository.save(curso);
@@ -165,6 +168,7 @@ public class CursoService {
 				if (curso.getFinalizado()) {					
 					throw new RuntimeException("Curso finalizado não pode ser excluido");
 				}
+				@SuppressWarnings("deprecation")
 				Log log = new Log(null,curso.getInclusao(),LocalDate.now(), curso, usuarioRepository.getById(1));
 				logRepository.save(log);
 				cursoRepository.delete(curso);

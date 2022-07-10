@@ -1,0 +1,53 @@
+<h5>Cadastrar Usuário</h5>
+<p>Preencha os campos fazer o cadastro.</p>
+<form [formGroup]="formAccount" (ngSubmit)="(onSubmit())">
+  <div *ngIf="mensagem_sucesso" class="mb-3 alert alert-dark">
+    <strong>{{mensagem_sucesso}}</strong>
+  </div>
+
+  <div *ngIf="mensagem_erro" class="mb-3 alert alert-dark">
+    <strong>{{mensagem_erro}}</strong>
+  </div>
+
+  <div class="class col-md-4">
+    <label>Nome:</label>
+    <input type="text" class="form-control" formControlName="nome" />
+    <div class="text-danger" *ngIf="form.nome.touched && form.nome.invalid">
+      <span *ngIf="form.nome.errors.required">
+        <i class="fa fa-exclamation-circle"></i>
+        Por favor, digite a nome.
+      </span>
+    </div>
+  </div>
+
+  <div class="class col-md-4">
+    <label>Usuario:</label>
+    <input type="text" class="form-control" formControlName="login" />
+    <div class="text-danger" *ngIf="form.login.touched && form.login.invalid">
+      <span *ngIf="form.login.errors.required">
+        <i class="fa fa-exclamation-circle"></i>
+        Por favor, digite o login.
+      </span>
+    </div>
+
+  </div>
+  <div class="class col-md-4">
+    <label>Senha:</label>
+    <input type="password" class="form-control" formControlName="senha" />
+    <div class="text-danger" *ngIf="form.senha.touched && form.senha.invalid">
+      <span *ngIf="form.senha.errors.required">
+        <i class="fa fa-exclamation-circle"></i>
+        Por favor, digite a senha.
+      </span>
+    </div>
+  </div>
+
+
+
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <input type="submit" [disabled]="!formAccount.valid" class="btn btn-dark" value="Cadastrar" />
+    </div>
+
+  </div>
+</form>

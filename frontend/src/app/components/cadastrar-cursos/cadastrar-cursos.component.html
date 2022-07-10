@@ -1,0 +1,80 @@
+<h5>Cadastrar Curso</h5>
+<p>Preencha os campos para incluir um curso.</p>
+<form [formGroup]="formCadastro" (ngSubmit)="(onSubmit())">
+  <div *ngIf="mensagem" class="mb-3 alert alert-dark">
+    <strong>{{mensagem}}</strong>
+  </div>
+  <div class="row mb-3">
+    <div class="class col-md-6">
+      <label> Descrição:</label>
+      <input type="text" class="form-control" formControlName="descricao" />
+      <div class="text-danger" *ngIf="form.descricao.touched && form.descricao.invalid">
+        <span *ngIf="form.descricao.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, digite a descrição.
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <label>Data de início:</label>
+      <input type="date" class="form-control" formControlName="inicio" />
+
+      <div class="text-danger" *ngIf="form.inicio.touched && form.inicio.invalid">
+
+        <span *ngIf="form.inicio.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, informe a data de início.
+        </span>
+
+      </div>
+    </div>
+    <div class="col-md-3">
+      <label>Data de término:</label>
+      <input type="date" class="form-control" formControlName="termino" />
+
+      <div class="text-danger" *ngIf="form.termino.touched && form.termino.invalid">
+
+        <span *ngIf="form.termino.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, informe a data de término.
+        </span>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="class col-md-3">
+      <label>Categoria:</label>
+      <select class="form-select" formControlName="id_categoria">
+        <option *ngFor="let c of categorias" value="{{c.id_categoria}}">{{c.categoria}}</option>
+      </select>
+    </div>
+
+    <div class="class col-md-3">
+      <label> Quantidade de Alunos:</label>
+      <input type="number" class="form-control" formControlName="quantidadeAlunos" />
+      <div class="text-danger" *ngIf="form.quantidadeAlunos.touched && form.quantidadeAlunos.invalid">
+        <span *ngIf="form.quantidadeAlunos.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, digite a quantidade de alunos.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="submit" [disabled]="!formCadastro.valid" class="btn btn-dark" value="Adicionar" />
+      &nbsp;
+      <button class="btn btn botaodevoltar" routerLink="/pagina-inicial">Voltar</button>
+
+
+    </div>
+  </div>
+
+
+
+</form>

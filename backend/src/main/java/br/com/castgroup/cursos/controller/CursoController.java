@@ -2,15 +2,13 @@ package br.com.castgroup.cursos.controller;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.castgroup.cursos.entities.Curso;
-import br.com.castgroup.cursos.entities.Log;
-import br.com.castgroup.cursos.repository.CategoriaRepository;
-import br.com.castgroup.cursos.repository.CursoRepository;
-import br.com.castgroup.cursos.repository.LogRepository;
-import br.com.castgroup.cursos.repository.UsuarioRepository;
 import br.com.castgroup.cursos.service.CursoService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/api/cursos")
@@ -35,6 +29,10 @@ public class CursoController {
 	@Autowired
 	CursoService cursoService;
 
+	
+
+	@ApiOperation("Serviço para cadastrar cursos")
+	@CrossOrigin
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String>cadastrar(@RequestBody Curso request){
 		try {
@@ -45,6 +43,8 @@ public class CursoController {
 		}
 	}
 	
+	@ApiOperation("Serviço para atualizar cursos")
+	@CrossOrigin
 	@PutMapping(value = "/{id_curso}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String>atualizar(@PathVariable("id_curso") Integer id_curso, @RequestBody Curso request){
 		try {
@@ -55,6 +55,8 @@ public class CursoController {
 		}
 	}
 	
+	@ApiOperation("Serviço para listar cursos por data")
+	@CrossOrigin
 	@GetMapping(value = "/data/{inicio}/{termino}")
 	public List<Curso> findByData(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {		
@@ -71,18 +73,23 @@ public class CursoController {
 	}
 
 
+	@ApiOperation("Serviço para listar cursos")
+	@CrossOrigin
 	@GetMapping
 	public List<Curso> listarCursos() {		
 		return cursoService.acharTodos();
 	}
 
+	@ApiOperation("Serviço para listar cursos por descrição")
+	@CrossOrigin
 	@GetMapping(value = "/nome/{descricao}")
 	public ResponseEntity<List<Curso>> findByDescricao(@PathVariable("descricao") String descricao) {
 		return ResponseEntity.status(HttpStatus.OK).body(cursoService.acharPorDescricao(descricao));
 	}
 	
 	
-
+	@ApiOperation("Serviço para deletar cursos")
+	@CrossOrigin
 	@DeleteMapping(value = "/{id_curso}")
 	public ResponseEntity<String> deleteById(@PathVariable("id_curso") Integer id_curso) {		
 		try {
