@@ -1,0 +1,32 @@
+package br.com.castgroup.cursos.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import br.com.castgroup.cursos.entities.Log;
+import br.com.castgroup.cursos.entities.Usuario;
+
+public interface LogRepository extends JpaRepository<Log, Integer>{
+	   
+
+//	@Query("select u from Usuario u where u.login = :login and u.senha = :senha")	
+//	Usuario findByLoginAndSenha(@Param("login") String login, @Param("senha") String senha);
+	   
+	
+	@Query("SELECT u.nome, l.usuario.idUsuario from Log l join Usuario u on u.idUsuario = l.usuario")	
+	List<Object> listarLogs();
+		
+		
+//	@Query("select count(*) from Curso c where (:inicio <= c.inicio and :termino >= c.inicio)"
+//			+ "OR"
+//			+ "								   (:inicio <= c.termino and :termino >= c.termino)"
+//			+ "OR"
+//			+ "								   (:inicio >= c.inicio and :termino <= c.termino)")	
+
+	
+
+
+}

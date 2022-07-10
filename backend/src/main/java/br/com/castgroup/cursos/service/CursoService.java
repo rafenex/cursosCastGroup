@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.castgroup.cursos.entities.Categoria;
 import br.com.castgroup.cursos.entities.Curso;
 import br.com.castgroup.cursos.entities.Log;
+import br.com.castgroup.cursos.entities.Usuario;
 import br.com.castgroup.cursos.repository.CategoriaRepository;
 import br.com.castgroup.cursos.repository.CursoRepository;
 import br.com.castgroup.cursos.repository.LogRepository;
@@ -31,14 +32,11 @@ public class CursoService {
 
 	@Autowired
 	CategoriaRepository categoriaRepository;
-	
 
-	
+	Usuario usuarioLogado = new Usuario();
 
-	private String message = null;
-
-	public String mensagem() {
-		return message;
+	public void usuarioLogado(Usuario usuario) {
+		usuarioLogado = usuario;
 	}
 
 	@Transactional
@@ -46,20 +44,63 @@ public class CursoService {
 		validaData(curso);
 		existeCategoria(curso, categoriaRepository);
 		existeDescricao(curso, cursoRepository);
+		System.out.println("Usuario ao cadastrar: " + usuarioLogado);
 		@SuppressWarnings("deprecation")
-		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso, usuarioRepository.getById(1));
+		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso,"Cadastrou Curso",
+				usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
 		curso.setInclusao(LocalDate.now());
 		logRepository.save(log);
 		cursoRepository.save(curso);
 	}
 
+	@Transactional
+	public void atualizarCurso(Curso request, Integer id_curso) {
+		Optional<Curso> item = cursoRepository.findById(id_curso);
+		if (item.isEmpty()) {
+			throw new RuntimeException("Curso não encontrado");
+		} else {
+			Curso curso = item.get();
+			converter(request, curso);
+			validaDataUpdate(curso);
+			existeCategoria(curso, categoriaRepository);
+			@SuppressWarnings("deprecation")
+			Log log = new Log(null, curso.getInclusao(), LocalDate.now(), curso, "Atualizou Curso",
+					usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
+			logRepository.save(log);
+			cursoRepository.save(curso);
+		}
+	}
 
+	@Transactional
+	public void deletarCursoPorId(Integer id_curso) {
+		Optional<Curso> item = cursoRepository.findById(id_curso);
+		if (item.isEmpty()) {
+			throw new RuntimeException("Curso não encontrado");
+		} else {
+			Curso curso = item.get();
+			if (curso.getFinalizado()) {
+				throw new RuntimeException("Curso finalizado não pode ser excluido");
+			}
+			@SuppressWarnings("deprecation")
+			Log log = new Log(null, curso.getInclusao(), LocalDate.now(), curso, "Deletou Curso",
+					usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
+			logRepository.save(log);
+			cursoRepository.delete(curso);
+		}
+	}
+
+	public List<Curso> acharTodos() {
+		return cursoRepository.findAll();
+
+	}
+
+	
 	private void existeDescricao(Curso curso, CursoRepository cursoRepository) {
 		List<Curso> findByDescricao = cursoRepository.findByDescricao(curso.getDescricao());
-		if(findByDescricao.size()>0) {
+		if (findByDescricao.size() > 0) {
 			throw new RuntimeException("Curso já cadastrado");
 		}
-		
+
 	}
 
 	private void existeCategoria(Curso request, CategoriaRepository categoriaRepository) {
@@ -70,13 +111,13 @@ public class CursoService {
 	}
 
 	private void validaData(Curso request) {
-		if (request.getInicio().isBefore(LocalDate.now())) {
-			throw new RuntimeException("Data de inicio anterior a data atual");
-		}
+//		if (request.getInicio().isBefore(LocalDate.now())) {
+//			throw new RuntimeException("Data de inicio anterior a data atual");
+//		}
 		if (request.getInicio().isAfter(request.getTermino())) {
 			throw new RuntimeException("Inicio depois do fim");
 		}
-		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 0) {			
+		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 0) {
 			throw new RuntimeException("Já existe curso nessa data");
 		}
 	}
@@ -88,41 +129,20 @@ public class CursoService {
 		if (request.getInicio().isAfter(request.getTermino())) {
 			throw new RuntimeException("Inicio depois do fim");
 		}
-		System.out.println(request.getDescricao());
-		System.out.println(cursoRepository.contador(request.getInicio(), request.getTermino()));
 		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 1) {
-			
+
 			throw new RuntimeException("Já existe curso nessa data");
 		}
 	}
 
-	@Transactional
-	public void atualizarCurso(Curso request, Integer id_curso) {
-		Optional<Curso> item = cursoRepository.findById(id_curso);
-		if (item.isEmpty()) {
-			throw new RuntimeException("Curso não encontrado");
-		} else {			
-		Curso curso = item.get();
-		converter(request, curso);
-		validaDataUpdate(curso);
-		existeCategoria(curso, categoriaRepository);
-		@SuppressWarnings("deprecation")
-		Log log = new Log(null, curso.getInclusao(), LocalDate.now(), curso, usuarioRepository.getById(1));
-		logRepository.save(log);
-		cursoRepository.save(curso);
-	}
-	}
-	
 	public void converter(Curso request, Curso curso) {
 		curso.setCategoria(request.getCategoria());
 		curso.setDescricao(request.getDescricao());
 		curso.setFinalizado(request.getFinalizado());
 		curso.setInclusao(request.getInicio());
 		curso.setInicio(request.getInicio());
-		curso.setTermino(request.getTermino());				
+		curso.setTermino(request.getTermino());
 	}
-
-
 
 	public void finalizado(Curso curso) {
 		if (curso.getTermino().isBefore(LocalDate.now())) {
@@ -141,12 +161,7 @@ public class CursoService {
 		if (item.isEmpty()) {
 			throw new RuntimeException("Curso não encontrado");
 		}
-		return item;		
-	}
-
-	public List<Curso> acharTodos() {
-		return cursoRepository.findAll();
-		
+		return item;
 	}
 
 	public List<Curso> acharPorDescricao(String descricao) {
@@ -155,23 +170,7 @@ public class CursoService {
 			throw new RuntimeException("Não foi encotrado nenhum curso");
 		}
 		return listaDeCursos;
-		
+
 	}
 
-	@Transactional
-	public void deletarCursoPorId(Integer id_curso) {
-			Optional<Curso> item = cursoRepository.findById(id_curso);
-			if (item.isEmpty()) {
-				throw new RuntimeException("Curso não encontrado");
-			} else {
-				Curso curso = item.get();
-				if (curso.getFinalizado()) {					
-					throw new RuntimeException("Curso finalizado não pode ser excluido");
-				}
-				@SuppressWarnings("deprecation")
-				Log log = new Log(null,curso.getInclusao(),LocalDate.now(), curso, usuarioRepository.getById(1));
-				logRepository.save(log);
-				cursoRepository.delete(curso);
-			}		
-	}
 }

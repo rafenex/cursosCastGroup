@@ -19,7 +19,7 @@
   <div class="row mb-3">
     <div class="col-md-3">
       <label>Data de início:</label>
-      <input type="date" class="form-control" formControlName="inicio" />
+      <input type="date" class="form-control" formControlName="inicio" required="true" />
 
       <div class="text-danger" *ngIf="form.inicio.touched && form.inicio.invalid">
 
@@ -32,7 +32,7 @@
     </div>
     <div class="col-md-3">
       <label>Data de término:</label>
-      <input type="date" class="form-control" formControlName="termino" />
+      <input type="date" class="form-control" formControlName="termino" required="true" />
 
       <div class="text-danger" *ngIf="form.termino.touched && form.termino.invalid">
 

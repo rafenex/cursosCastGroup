@@ -1,1 +1,49 @@
-<p>consultar-cursos works!</p>
+<h5>Consulta de cursos</h5>
+<p>Listagem de cursos Cadastrados</p>
+
+<table class="table table-hover table-sm table-bordered">
+  <thead>
+    <tr>
+      <th>Descrição</th>
+      <th>Categoria</th>
+      <th>Início</th>
+      <th>Término</th>
+      <th>Alunos</th>
+      <th>Status</th>
+      <th>Ações</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of cursos">
+      <td>{{c.descricao}}</td>
+      <td>{{c.categoria.categoria}}</td>
+      <td>{{c.inicio | date : 'dd/MM/yyyy'}}</td>
+      <td>{{c.termino | date : 'dd/MM/yyyy'}}</td>
+      <td>{{c.quantidadeAlunos}}</td>
+      <td *ngIf="c.finalizado">Finalizado</td>
+      <td *ngIf="!c.finalizado">Em Curso</td>
+      <td>
+        <button class="btn btn-sm botaoeditar" [routerLink]="['/editar-cursos',c.id_curso]">Editar</button>
+        &nbsp;
+        <button class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)">Excluir</button>
+
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan=" 6">Total de registros: {{cursos.length}}
+
+      </td>
+    </tr>
+    <!-- <tr>
+      <td colspan=" 6">
+        <button class="btn btn-dark btn-sm" (click)="relatorio()">Relatorio em PDF</button>
+      </td>
+    </tr> -->
+  </tfoot>
+</table>
+
+
+<a class="btn btn botaodevoltar" href="javascript:history.back()">Voltar</a>

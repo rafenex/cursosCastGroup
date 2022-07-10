@@ -6,7 +6,8 @@ import { Observable } from "rxjs";
 export class TokenInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler):
     Observable<HttpEvent<any>> {
-    if (request.url.includes('/api')) {
+    if (request.url.includes('/api/cursos') ||
+      (request.url.includes('/api/categorias'))) {
       var accessToken = localStorage.getItem('access_token');
       request = request.clone({
         setHeaders: { Authorization: 'Bearer ' + accessToken }

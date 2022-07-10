@@ -1,0 +1,19 @@
+package br.com.castgroup.cursos.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import br.com.castgroup.cursos.entities.Usuario;
+import br.com.castgroup.cursos.repository.UsuarioRepository;
+
+@Service
+public class LoginService {
+	
+	@Autowired
+	UsuarioRepository usuarioRepository;
+	
+	public Usuario salvarUsuario(Usuario usuario){		
+		return usuario;		
+	}
+
+}

@@ -1,0 +1,29 @@
+package br.com.castgroup.cursos.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import br.com.castgroup.cursos.entities.Log;
+
+public interface LogRepository extends JpaRepository<Log, Integer>{
+	   
+
+	   
+	
+	@Query(" SELECT tb_log.id_log, tb_curso.id_curso, tb_log.acao, tb_log.usuario_idusuario AS id_usuario, tb_usuario.nome, tb_curso.descricao from tb_log\r\n"
+			+ "	   JOIN tb_usuario ON tb_log.usuario_idusuario = tb_usuario.idusuario \r\n"
+			+ "	   JOIN tb_curso ON tb_curso.id_curso = tb_log.curso_id_curso")	
+		
+		
+//	@Query("select count(*) from Curso c where (:inicio <= c.inicio and :termino >= c.inicio)"
+//			+ "OR"
+//			+ "								   (:inicio <= c.termino and :termino >= c.termino)"
+//			+ "OR"
+//			+ "								   (:inicio >= c.inicio and :termino <= c.termino)")	
+	List<Log> listarLogs();
+	
+
+
+}

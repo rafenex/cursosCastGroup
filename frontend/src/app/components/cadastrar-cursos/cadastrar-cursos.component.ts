@@ -73,7 +73,6 @@ export class CadastrarCursosComponent implements OnInit {
         data => {
           this.mensagem = data;
           this.formCadastro.reset();
-          window.location.href = "/cadastrar-cursos";
         },
         e => {
           this.mensagem = e.error;

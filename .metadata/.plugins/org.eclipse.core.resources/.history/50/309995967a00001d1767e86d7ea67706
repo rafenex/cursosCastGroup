@@ -1,0 +1,13 @@
+package br.com.castgroup.cursos.dtos;
+
+public class LogDTO {
+	private String nome;
+	private String descricao;
+	private Integer id_log;
+	private Integer id_curso;
+	private String acao;
+	private Integer idUsuario;
+	
+	
+
+}
