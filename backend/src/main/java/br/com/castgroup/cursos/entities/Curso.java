@@ -38,7 +38,7 @@ public class Curso {
 	private LocalDate inclusao;
 	
 	public Curso() {
-
+		
 	}
 	
 	

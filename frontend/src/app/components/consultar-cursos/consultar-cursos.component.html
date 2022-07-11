@@ -1,5 +1,51 @@
 <h5>Consulta de cursos</h5>
 <p>Listagem de cursos Cadastrados</p>
+<div *ngIf="mensagem" class="mb-3 alert alert-dark">
+  <strong>{{mensagem}}</strong>
+</div>
+
+<div class="row mb-3">
+  <div class="col md-4">
+    <input type="text" class="form-control" placeholder="Filtrar Cursos" [(ngModel)]="filtro" />
+
+  </div>
+</div>
+
+<div>
+  <form [formGroup]="formFiltroData" (ngSubmit)="(onSubmit())">
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label>Data de início:</label>
+        <input type="date" class="form-control" formControlName="inicio" required="true" />
+      </div>
+      <div class="col-md-3">
+        <label>Data de término:</label>
+        <input type="date" class="form-control" formControlName="termino" required="true" />
+      </div>
+      <div class="col-md-3 mt-4">
+        <input type="submit" [disabled]="!formFiltroData.valid" class="btn btn-dark" value="Filtrar por data" />
+      </div>
+    </div>
+  </form>
+</div>
+
+<form [formGroup]="formFiltroDescricao" (ngSubmit)="(onSubmitD())">
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <label> Descrição:</label>
+      <input type="text" class="form-control" formControlName="descricao" />
+      <div class="text-danger" *ngIf="formD.descricao.touched && formD.descricao.invalid">
+        <span *ngIf="formD.descricao.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, digite a descrição.
+        </span>
+      </div>
+    </div>
+    <div class="col-md-3 mt-4">
+      <input type="submit" [disabled]="!formFiltroDescricao" class="btn btn-dark" value="Filtrar por Descrição" />
+    </div>
+  </div>
+</form>
 
 <table class="table table-hover table-sm table-bordered">
   <thead>
@@ -15,7 +61,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let c of cursos">
+    <tr *ngFor="let c of cursos | filter : filtro">
       <td>{{c.descricao}}</td>
       <td>{{c.categoria.categoria}}</td>
       <td>{{c.inicio | date : 'dd/MM/yyyy'}}</td>

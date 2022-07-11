@@ -16,6 +16,11 @@ export class EditarCursosComponent implements OnInit {
   categorias: any[] = [];
   mensagem = "";
   curso: any;
+  inicio: any;
+  termino: any;
+  categoria: any;
+  descricao: any;
+  quantidadeAlunos: any;
 
   constructor(private httpClient: HttpClient, private activeRoute: ActivatedRoute, private authHelper: AuthHelper) { }
 
@@ -43,17 +48,19 @@ export class EditarCursosComponent implements OnInit {
 
 
     const idCurso = this.activeRoute.snapshot.paramMap.get('id') as string;
-    this.httpClient.put(environment.apiUrl + "/cursos/" + idCurso, objeto,
+    this.httpClient.put(environment.apiUrl + "/cursos/" + idCurso,
+      objeto,
       { responseType: 'text' })
       .subscribe(
         data => {
           this.mensagem = data;
         },
         e => {
-          this.mensagem = "Ocorreu um erro, a edição não foi realizada."
+          this.mensagem = e.error;
           console.log(e);
         }
       )
+    // window.location.href = "/editar-cursos/" + idCurso;
   }
 
   ngOnInit(): void {
@@ -75,13 +82,20 @@ export class EditarCursosComponent implements OnInit {
         .subscribe(
           (data: any) => {
             this.curso = data;
-            console.log(data);
+            this.inicio = this.curso.inicio;
+            this.termino = this.curso.termino;
+            this.categoria = this.curso.categoria.categoria;
+            this.descricao = this.curso.descricao;
+            this.quantidadeAlunos = this.curso.quantidadeAlunos;
+
             this.formEdicao.patchValue(data);
           },
           (e) => {
             console.log(e);
           }
         )
+
+
     } else {
       window.alert("Acesso negado");
       window.location.href = "/";

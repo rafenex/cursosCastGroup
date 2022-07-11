@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TokenInterceptor } from './_intercepters/tokenInterceptor';
 import { AuthHelper } from './_helpers/auth-helpers';
 import { PaginaPrincipalComponent } from './components/pagina-principal/pagina-principal.component';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,9 @@ import { PaginaPrincipalComponent } from './components/pagina-principal/pagina-p
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    Ng2SearchPipeModule,
+    ReactiveFormsModule,
+
   ],
   providers: [
     {

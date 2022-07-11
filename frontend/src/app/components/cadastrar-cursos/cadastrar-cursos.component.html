@@ -21,27 +21,11 @@
       <label>Data de início:</label>
       <input type="date" class="form-control" formControlName="inicio" required="true" />
 
-      <div class="text-danger" *ngIf="form.inicio.touched && form.inicio.invalid">
-
-        <span *ngIf="form.inicio.errors.required">
-          <i class="fa fa-exclamation-circle"></i>
-          Por favor, informe a data de início.
-        </span>
-
-      </div>
     </div>
     <div class="col-md-3">
       <label>Data de término:</label>
       <input type="date" class="form-control" formControlName="termino" required="true" />
 
-      <div class="text-danger" *ngIf="form.termino.touched && form.termino.invalid">
-
-        <span *ngIf="form.termino.errors.required">
-          <i class="fa fa-exclamation-circle"></i>
-          Por favor, informe a data de término.
-        </span>
-
-      </div>
     </div>
   </div>
 

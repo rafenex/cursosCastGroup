@@ -25,8 +25,6 @@ public class Log {
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private Usuario usuario;
-	
-	
 
 	public Log(Integer id_log, LocalDate inclusao, LocalDate ultimaAtualizacao, Curso curso, String acao,
 			Usuario usuario) {
@@ -38,6 +36,17 @@ public class Log {
 		this.acao = acao;
 		this.usuario = usuario;
 	}
+	
+	public Log(Integer id_log, LocalDate ultimaAtualizacao, Curso curso, String acao,
+			Usuario usuario) {
+		super();
+		this.id_log = id_log;
+		this.ultimaAtualizacao = ultimaAtualizacao;
+		this.curso = curso;
+		this.acao = acao;
+		this.usuario = usuario;
+	}
+	
 	
 	public Log() {
 		// TODO Auto-generated constructor stub

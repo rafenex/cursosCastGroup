@@ -23,5 +23,12 @@ public interface CursoRepository extends JpaRepository<Curso, Integer>{
 			+ "								   (:inicio >= c.inicio and :termino <= c.termino)")	
 	Integer contador(LocalDate inicio, LocalDate termino);
 	
+	@Query("select c from Curso c where (:inicio <= c.inicio and :termino >= c.inicio)"
+			+ "OR"
+			+ "								   (:inicio <= c.termino and :termino >= c.termino)"
+			+ "OR"
+			+ "								   (:inicio >= c.inicio and :termino <= c.termino)")	
+	List<Curso> cursosPorData(LocalDate inicio, LocalDate termino);
+	
 
 }

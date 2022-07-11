@@ -22,6 +22,7 @@ import br.com.castgroup.cursos.entities.Curso;
 import br.com.castgroup.cursos.service.CursoService;
 import io.swagger.annotations.ApiOperation;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/cursos")
 public class CursoController {
@@ -32,7 +33,6 @@ public class CursoController {
 	
 
 	@ApiOperation("Serviço para cadastrar cursos")
-	@CrossOrigin
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String>cadastrar(@RequestBody Curso request){
 		try {
@@ -44,7 +44,6 @@ public class CursoController {
 	}
 	
 	@ApiOperation("Serviço para atualizar cursos")
-	@CrossOrigin
 	@PutMapping(value = "/{id_curso}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String>atualizar(@PathVariable("id_curso") Integer id_curso, @RequestBody Curso request){
 		try {
@@ -56,13 +55,13 @@ public class CursoController {
 	}
 	
 	@ApiOperation("Serviço para listar cursos por data")
-	@CrossOrigin
 	@GetMapping(value = "/data/{inicio}/{termino}")
 	public List<Curso> findByData(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino) {		
 		return cursoService.listarPorData(inicio, termino);
 	}
 	
+	@ApiOperation("Serviço para achar curso por id")
 	@GetMapping(value = "/{id_curso}")
 	public ResponseEntity<?> findById(@PathVariable("id_curso") Integer id_curso) {		
 		try {
@@ -74,22 +73,24 @@ public class CursoController {
 
 
 	@ApiOperation("Serviço para listar cursos")
-	@CrossOrigin
 	@GetMapping
 	public List<Curso> listarCursos() {		
 		return cursoService.acharTodos();
 	}
 
 	@ApiOperation("Serviço para listar cursos por descrição")
-	@CrossOrigin
 	@GetMapping(value = "/nome/{descricao}")
-	public ResponseEntity<List<Curso>> findByDescricao(@PathVariable("descricao") String descricao) {
-		return ResponseEntity.status(HttpStatus.OK).body(cursoService.acharPorDescricao(descricao));
+	public ResponseEntity<?> findByDescricao(@PathVariable("descricao") String descricao) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(cursoService.acharPorDescricao(descricao));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}
+		
 	}
 	
 	
 	@ApiOperation("Serviço para deletar cursos")
-	@CrossOrigin
 	@DeleteMapping(value = "/{id_curso}")
 	public ResponseEntity<String> deleteById(@PathVariable("id_curso") Integer id_curso) {		
 		try {

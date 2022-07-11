@@ -1,5 +1,8 @@
 <h5>Editar Curso</h5>
 <p>Preencha os campos para alterar os dados do curso.</p>
+<p>{{descricao}} | {{categoria}} | {{quantidadeAlunos}} aluno(s)</p>
+<p>Inicio: {{inicio | date : 'dd/MM/yyyy'}} | Término: {{termino | date : 'dd/MM/yyyy'}}</p>
+
 <form [formGroup]="formEdicao" (ngSubmit)="(onSubmit())">
   <div *ngIf="mensagem" class="mb-3 alert alert-dark">
     <strong>{{mensagem}}</strong>
@@ -18,36 +21,19 @@
   </div>
   <div class="row mb-3">
     <div class="col-md-3">
-      <label>Data de início: {{curso.inicio | date : 'dd/MM/yyyy'}}</label>
+      <label>Data de início:</label>
       <input type="date" class="form-control" formControlName="inicio" />
 
-      <div class="text-danger" *ngIf="form.inicio.touched && form.inicio.invalid">
-
-        <span *ngIf="form.inicio.errors.required">
-          <i class="fa fa-exclamation-circle"></i>
-          Por favor, informe a data de início.
-        </span>
-
-      </div>
     </div>
     <div class="col-md-3">
-      <label>Data de término: {{curso.termino | date : 'dd/MM/yyyy'}}</label>
+      <label>Data de término:</label>
       <input type="date" class="form-control" formControlName="termino" />
-
-      <div class="text-danger" *ngIf="form.termino.touched && form.termino.invalid">
-
-        <span *ngIf="form.termino.errors.required">
-          <i class="fa fa-exclamation-circle"></i>
-          Por favor, informe a data de término.
-        </span>
-
-      </div>
     </div>
   </div>
 
   <div class="row mb-3">
     <div class="class col-md-3">
-      <label>Categoria: {{curso.categoria.categoria}}</label>
+      <label>Categoria: {{categoria}}</label>
       <select class="form-select" formControlName="id_categoria" required="true">
         <option *ngFor="let c of categorias" value="{{c.id_categoria}}">{{c.categoria}}</option>
       </select>
