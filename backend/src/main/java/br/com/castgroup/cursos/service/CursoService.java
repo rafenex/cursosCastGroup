@@ -44,7 +44,8 @@ public class CursoService {
 		validaData(curso);
 		existeCategoria(curso, categoriaRepository);
 		existeDescricao(curso, cursoRepository);
-		System.out.println("Usuario ao cadastrar: " + usuarioLogado);
+		finalizado(curso);
+		System.out.println("Usuario ao cadastrar: " + usuarioLogado + curso);
 		@SuppressWarnings("deprecation")
 		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso,"Cadastrou Curso",
 				usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
@@ -60,11 +61,14 @@ public class CursoService {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
 			Curso curso = item.get();
+			
 			converter(request, curso);
+			finalizado(curso);
 			validaDataUpdate(curso);
 			existeCategoria(curso, categoriaRepository);
+			
 			@SuppressWarnings("deprecation")
-			Log log = new Log(null, LocalDate.now(), curso, "Atualizou Curso",
+			Log log = new Log(null, item.get().getInclusao(), LocalDate.now(), curso, "Atualizou Curso",
 					usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
 			logRepository.save(log);
 			cursoRepository.save(curso);

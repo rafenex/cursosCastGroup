@@ -33,16 +33,11 @@
   <div class="row mb-3">
     <div class="col-md-3">
       <label> Descrição:</label>
-      <input type="text" class="form-control" formControlName="descricao" />
-      <div class="text-danger" *ngIf="formD.descricao.touched && formD.descricao.invalid">
-        <span *ngIf="formD.descricao.errors.required">
-          <i class="fa fa-exclamation-circle"></i>
-          Por favor, digite a descrição.
-        </span>
-      </div>
+      <input type="text" class="form-control" formControlName="descricao" required="true" />
+
     </div>
     <div class="col-md-3 mt-4">
-      <input type="submit" [disabled]="!formFiltroDescricao" class="btn btn-dark" value="Filtrar por Descrição" />
+      <input type="submit" [disabled]="!formFiltroDescricao.valid" class="btn btn-dark" value="Filtrar por Descrição" />
     </div>
   </div>
 </form>

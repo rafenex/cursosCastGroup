@@ -67,11 +67,14 @@ export class ConsultarCursosComponent implements OnInit {
   }
 
   filtroDate(inicio: any, termino: any) {
+    inicio = this.formFiltroData.value.inicio;
+    termino = this.formFiltroData.value.termino;
     this.httpClient.get(
       environment.apiUrl + '/cursos/data/' + inicio + '/' + termino)
       .subscribe(
         (data) => {
           this.cursos = data as any[];
+
         },
         (e) => {
           this.mensagem = e.error;

@@ -45,6 +45,7 @@ export class EditarCursosComponent implements OnInit {
       categoria: { id_categoria: this.formEdicao.value.id_categoria },
       quantidadeAlunos: this.formEdicao.value.quantidadeAlunos
     }
+    debugger
 
 
     const idCurso = this.activeRoute.snapshot.paramMap.get('id') as string;

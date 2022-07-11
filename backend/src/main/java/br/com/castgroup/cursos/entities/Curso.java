@@ -26,7 +26,7 @@ public class Curso {
 	@NotNull
 	private LocalDate termino;
 	
-	private Boolean finalizado = false;
+	private Boolean finalizado;
 
 	private Integer quantidadeAlunos;
 	
@@ -40,7 +40,6 @@ public class Curso {
 	public Curso() {
 		
 	}
-	
 	
 
 	public LocalDate getInclusao() {
