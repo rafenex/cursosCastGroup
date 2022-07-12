@@ -30,28 +30,16 @@
     </div>
   </div>
 
-
-
-
-  <!-- <div class="row mb-3">
-    <div class="class col-md-3">
-      <label>Categoria: {{categoria}}</label>
-      <select class="form-select" formControlName="id_categoria" required="true">
-        <option *ngFor="let c of categorias" value="{{c.id_categoria}}">{{c.categoria}}</option>
-      </select>
-    </div> -->
-
+  <!-- {{c.termino | date : 'dd/MM/yyyy'}} -->
 
   <div class="row mb-3">
     <div class="class col-md-3">
       <label>Categoria: </label>
-      <select class="form-select" formControlName="id_categoria" required="true" [(ngModel)]="categoria.id_categoria">
+      <select class="form-select" formControlName="id_categoria" required="true" [(ngModel)]="categoria">
         <option *ngFor="let c of categorias" value="{{c.id_categoria}}">
           {{c.categoria}}</option>
       </select>
     </div>
-
-
 
     <div class="class col-md-3">
       <label> Quantidade de Alunos:</label>

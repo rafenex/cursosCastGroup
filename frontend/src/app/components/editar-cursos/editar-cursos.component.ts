@@ -1,3 +1,5 @@
+
+import { DatePipe, formatDate } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -10,8 +12,11 @@ import { environment } from 'src/environments/environment';
   templateUrl: './editar-cursos.component.html',
   styleUrls: ['./editar-cursos.component.css']
 })
+
+
 export class EditarCursosComponent implements OnInit {
 
+  pipe = new DatePipe('en-US'); // Use your own locale
 
   categorias: any[] = [];
   mensagem = "";
@@ -21,6 +26,8 @@ export class EditarCursosComponent implements OnInit {
   categoria: any;
   descricao: any;
   quantidadeAlunos: any;
+
+
 
   constructor(private httpClient: HttpClient, private activeRoute: ActivatedRoute, private authHelper: AuthHelper) { }
 
@@ -83,13 +90,15 @@ export class EditarCursosComponent implements OnInit {
       this.httpClient.get(environment.apiUrl + "/cursos/" + idCurso)
         .subscribe(
           (data: any) => {
-
             this.curso = data;
+            this.curso.termino = this.pipe.transform(this.curso.termino, 'yyyy-MM-dd');
+            this.curso.inicio = this.pipe.transform(this.curso.inicio, 'yyyy-MM-dd');
             this.inicio = this.curso.inicio;
             this.termino = this.curso.termino;
-            this.categoria = this.curso.categoria;
+            this.categoria = this.curso.categoria.id_categoria;
             this.descricao = this.curso.descricao;
             this.quantidadeAlunos = this.curso.quantidadeAlunos;
+
             this.formEdicao.patchValue(data);
 
           },

@@ -61,10 +61,11 @@ public class CursoService {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
 			Curso curso = item.get();
-			converter(request, curso);
 			validaDataUpdate(request);
-			existeDescricaoUpdate(request);		
-			finalizado(curso);			
+			existeDescricaoUpdate(request);
+			converter(request, curso);
+			finalizado(curso);
+			
 
 			existeCategoria(curso, categoriaRepository);
 
