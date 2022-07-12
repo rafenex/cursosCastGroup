@@ -1,3 +1,4 @@
+import { LogsComponent } from './components/logs/logs.component';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -15,6 +16,7 @@ import { AuthHelper } from './_helpers/auth-helpers';
 import { PaginaPrincipalComponent } from './components/pagina-principal/pagina-principal.component';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +25,9 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     CadastrarCursosComponent,
     ConsultarCursosComponent,
     EditarCursosComponent,
+    LogsComponent,
     PaginaPrincipalComponent
+
   ],
   imports: [
     BrowserModule,
@@ -32,6 +36,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     FormsModule,
     Ng2SearchPipeModule,
     ReactiveFormsModule,
+
 
   ],
   providers: [

@@ -1,5 +1,0 @@
-package br.com.castgroup.cursos.repository;
-
-public interface LogRepositoryDTO {
-
-}

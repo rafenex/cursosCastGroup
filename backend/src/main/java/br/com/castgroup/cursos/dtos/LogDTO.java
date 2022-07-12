@@ -10,6 +10,18 @@ public class LogDTO {
 	private Integer idUsuario;
 
 	
+	
+	
+	public LogDTO(String nome, String descricao, Integer id_log, Integer id_curso, String acao, Integer idUsuario) {
+		super();
+		this.nome = nome;
+		this.descricao = descricao;
+		this.id_log = id_log;
+		this.id_curso = id_curso;
+		this.acao = acao;
+		this.idUsuario = idUsuario;
+	}
+
 	public LogDTO() {
 
 	}

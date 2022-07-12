@@ -1,0 +1,35 @@
+<div class="row col-md-12">
+  <div class="col-md-4">
+    <h5>Logs</h5>
+    <p>Listagem de logs registrados</p>
+
+  </div>
+
+
+</div>
+
+<table class="table table-hover table-sm table-bordered">
+  <thead>
+    <tr>
+      <th>Curso</th>
+      <th>Usuario</th>
+      <th>ID Log</th>
+      <th>ID Curso</th>
+      <th>Ação</th>
+      <th>ID Usuario</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let l of logs">
+      <td>{{l.descricao}}</td>
+      <td>{{l.nome}}</td>
+      <td>{{l.id_log}}</td>
+      <td>{{l.id_curso}}</td>
+      <td>{{l.acao}}</td>
+      <td>{{l.idUsuario}}</td>
+    </tr>
+
+
+
+    <a class="btn btn botaodevoltar" href="javascript:history.back()">Voltar</a>

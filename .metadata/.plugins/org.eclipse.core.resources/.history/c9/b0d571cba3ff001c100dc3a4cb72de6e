@@ -1,5 +1,0 @@
-package br.com.castgroup.cursos.request;
-
-public class LoginPostRequest {
-
-}

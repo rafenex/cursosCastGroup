@@ -1,5 +1,0 @@
-package br.com.castgroup.cursos.config.security;
-
-public class MD5Cryptography {
-
-}

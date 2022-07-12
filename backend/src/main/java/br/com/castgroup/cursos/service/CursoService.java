@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +46,6 @@ public class CursoService {
 		existeCategoria(curso, categoriaRepository);
 		existeDescricao(curso, cursoRepository);
 		finalizado(curso);
-		System.out.println("Usuario ao cadastrar: " + usuarioLogado + curso);
 		@SuppressWarnings("deprecation")
 		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso, "Cadastrou Curso",
 				usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
@@ -60,11 +60,15 @@ public class CursoService {
 		if (item.isEmpty()) {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
-			Curso curso = item.get();
-			converter(request, curso);
+			Curso curso = item.get();		
+			System.out.println(curso.getInclusao());
 			validaDataUpdate(request);
-			existeDescricaoUpdate(request);		
-			finalizado(curso);			
+			existeDescricaoUpdate(request);	
+//			converter(request, curso);
+			request.setInclusao(curso.getInclusao());
+			BeanUtils.copyProperties(request, curso);
+			
+			finalizado(curso);		
 
 			existeCategoria(curso, categoriaRepository);
 
@@ -74,6 +78,17 @@ public class CursoService {
 			logRepository.save(log);
 			cursoRepository.save(curso);
 		}
+	}
+	
+	public void converter(Curso request, Curso curso) {
+		curso.setId_curso(request.getId_curso());
+		curso.setCategoria(request.getCategoria());
+		curso.setDescricao(request.getDescricao());
+		curso.setFinalizado(request.getFinalizado());
+		curso.setInicio(request.getInicio());
+		curso.setTermino(request.getTermino());
+		curso.setQuantidadeAlunos(request.getQuantidadeAlunos());
+
 	}
 
 	@Transactional
@@ -164,16 +179,6 @@ public class CursoService {
 		if (findByDescricao.size() > 0) {
 			throw new RuntimeException("Curso já cadastrado.");
 		}
-	}
-
-	public void converter(Curso request, Curso curso) {
-		curso.setId_curso(request.getId_curso());
-		curso.setCategoria(request.getCategoria());
-		curso.setDescricao(request.getDescricao());
-		curso.setFinalizado(request.getFinalizado());
-		curso.setInicio(request.getInicio());
-		curso.setTermino(request.getTermino());
-		curso.setQuantidadeAlunos(request.getQuantidadeAlunos());
 	}
 
 	public void finalizado(Curso curso) {
