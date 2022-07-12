@@ -41,10 +41,10 @@ export class CadastrarCursosComponent implements OnInit {
 
 
   formCadastro = new FormGroup({
-    descricao: new FormControl(''),
-    inicio: new FormControl(''),
-    termino: new FormControl(''),
-    id_categoria: new FormControl(''),
+    descricao: new FormControl('', [Validators.required]),
+    inicio: new FormControl('', [Validators.required]),
+    termino: new FormControl('', [Validators.required]),
+    id_categoria: new FormControl('', [Validators.required]),
     quantidadeAlunos: new FormControl('')
   })
 

@@ -24,17 +24,20 @@ public class LogController {
 
 
 
-	@GetMapping
-	public List<Object> listarLog() {		
-		List<Object> lista = new ArrayList<>();
-		for (Log log : logRepository.findAll()) {
-			LogDTO logDTO = new LogDTO();			
-			BeanUtils.copyProperties(log, logDTO);
-			lista.add(logDTO);			
-		}		
-		return lista;
-	}
-	
+//	@GetMapping
+//	public List<Object> listarLog() {		
+//		List<Object> lista = new ArrayList<>();
+//		for (Log log : logRepository.findAll()) {
+//			LogDTO logDTO = new LogDTO();	
+//			logDTO.setAcao(log.getAcao());
+//			logDTO.setDescricao(log.getAcao());
+//			logDTO.setId_curso(log.get);
+//			BeanUtils.copyProperties(log, logDTO);
+//			lista.add(logDTO);			
+//		}		
+//		return lista;
+//	}
+//	
 
 	
 	

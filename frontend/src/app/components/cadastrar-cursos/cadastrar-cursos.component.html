@@ -6,6 +6,7 @@
   </div>
   <div class="row mb-3">
     <div class="class col-md-6">
+
       <label> Descrição:</label>
       <input type="text" class="form-control" formControlName="descricao" />
       <div class="text-danger" *ngIf="form.descricao.touched && form.descricao.invalid">
@@ -52,10 +53,9 @@
   <div class="row mb-3">
     <div class="col-md-6">
       <input type="submit" [disabled]="!formCadastro.valid" class="btn btn-dark" value="Adicionar" />
+
       &nbsp;
-      <button class="btn btn botaodevoltar" routerLink="/pagina-inicial">Voltar</button>
-
-
+      <a class="btn btn botaodevoltar" href="javascript:history.back()">Voltar</a>
     </div>
   </div>
 

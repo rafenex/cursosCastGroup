@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
           this.formLogin.reset();
 
           //redirecionamento
-          window.location.href = "/cadastrar-cursos";
+          window.location.href = "/pagina-inicial";
 
 
         },

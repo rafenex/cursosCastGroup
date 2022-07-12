@@ -25,11 +25,11 @@ export class EditarCursosComponent implements OnInit {
   constructor(private httpClient: HttpClient, private activeRoute: ActivatedRoute, private authHelper: AuthHelper) { }
 
   formEdicao = new FormGroup({
-    id_curso: new FormControl(''),
-    descricao: new FormControl(''),
-    inicio: new FormControl(''),
-    termino: new FormControl(''),
-    id_categoria: new FormControl(''),
+    id_curso: new FormControl('', [Validators.required]),
+    descricao: new FormControl('', [Validators.required]),
+    inicio: new FormControl('', [Validators.required]),
+    termino: new FormControl('', [Validators.required]),
+    id_categoria: new FormControl('', [Validators.required]),
     quantidadeAlunos: new FormControl('')
   })
 
@@ -38,14 +38,15 @@ export class EditarCursosComponent implements OnInit {
   }
   onSubmit(): void {
     let objeto: any = {
-
+      id_curso: this.formEdicao.value.id_curso,
       descricao: this.formEdicao.value.descricao,
       inicio: this.formEdicao.value.inicio,
       termino: this.formEdicao.value.termino,
       categoria: { id_categoria: this.formEdicao.value.id_categoria },
       quantidadeAlunos: this.formEdicao.value.quantidadeAlunos
     }
-    debugger
+
+    console.log(objeto);
 
 
     const idCurso = this.activeRoute.snapshot.paramMap.get('id') as string;
@@ -82,14 +83,15 @@ export class EditarCursosComponent implements OnInit {
       this.httpClient.get(environment.apiUrl + "/cursos/" + idCurso)
         .subscribe(
           (data: any) => {
+
             this.curso = data;
             this.inicio = this.curso.inicio;
             this.termino = this.curso.termino;
-            this.categoria = this.curso.categoria.categoria;
+            this.categoria = this.curso.categoria;
             this.descricao = this.curso.descricao;
             this.quantidadeAlunos = this.curso.quantidadeAlunos;
-
             this.formEdicao.patchValue(data);
+
           },
           (e) => {
             console.log(e);

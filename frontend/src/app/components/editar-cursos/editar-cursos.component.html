@@ -1,7 +1,6 @@
 <h5>Editar Curso</h5>
 <p>Preencha os campos para alterar os dados do curso.</p>
-<p>{{descricao}} | {{categoria}} | {{quantidadeAlunos}} aluno(s)</p>
-<p>Inicio: {{inicio | date : 'dd/MM/yyyy'}} | Término: {{termino | date : 'dd/MM/yyyy'}}</p>
+
 
 <form [formGroup]="formEdicao" (ngSubmit)="(onSubmit())">
   <div *ngIf="mensagem" class="mb-3 alert alert-dark">
@@ -34,11 +33,21 @@
 
 
 
-  <div class="row mb-3">
+  <!-- <div class="row mb-3">
     <div class="class col-md-3">
       <label>Categoria: {{categoria}}</label>
       <select class="form-select" formControlName="id_categoria" required="true">
         <option *ngFor="let c of categorias" value="{{c.id_categoria}}">{{c.categoria}}</option>
+      </select>
+    </div> -->
+
+
+  <div class="row mb-3">
+    <div class="class col-md-3">
+      <label>Categoria: </label>
+      <select class="form-select" formControlName="id_categoria" required="true" [(ngModel)]="categoria.id_categoria">
+        <option *ngFor="let c of categorias" value="{{c.id_categoria}}">
+          {{c.categoria}}</option>
       </select>
     </div>
 
@@ -58,11 +67,10 @@
 
   <div class="row mb-3">
     <div class="col-md-6">
-      <input type="submit" [disabled]="!formEdicao.valid" class="btn btn-dark" value="Adicionar" />
+      <input type="submit" [disabled]="!formEdicao.valid" class="btn btn-dark" value="Atualizar" />
+
       &nbsp;
-      <button class="btn btn botaodevoltar" routerLink="/pagina-inicial">Voltar</button>
-
-
+      <a class="btn btn botaodevoltar" href="javascript:history.back()">Voltar</a>
     </div>
   </div>
 

@@ -47,7 +47,7 @@ public class CursoService {
 		finalizado(curso);
 		System.out.println("Usuario ao cadastrar: " + usuarioLogado + curso);
 		@SuppressWarnings("deprecation")
-		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso,"Cadastrou Curso",
+		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso, "Cadastrou Curso",
 				usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
 		curso.setInclusao(LocalDate.now());
 		logRepository.save(log);
@@ -61,12 +61,14 @@ public class CursoService {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
 			Curso curso = item.get();
-			
+			validaDataUpdate(request);
+			existeDescricaoUpdate(request);
 			converter(request, curso);
 			finalizado(curso);
-			validaDataUpdate(curso);
-			existeCategoria(curso, categoriaRepository);
 			
+
+			existeCategoria(curso, categoriaRepository);
+
 			@SuppressWarnings("deprecation")
 			Log log = new Log(null, item.get().getInclusao(), LocalDate.now(), curso, "Atualizou Curso",
 					usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
@@ -86,7 +88,7 @@ public class CursoService {
 				throw new RuntimeException("Curso finalizado não pode ser excluido");
 			}
 			@SuppressWarnings("deprecation")
-			Log log = new Log(null, curso.getInclusao(),LocalDate.now(), curso, "Deletou Curso",
+			Log log = new Log(null, curso.getInclusao(), LocalDate.now(), curso, "Deletou Curso",
 					usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
 			logRepository.save(log);
 			cursoRepository.delete(curso);
@@ -95,16 +97,6 @@ public class CursoService {
 
 	public List<Curso> acharTodos() {
 		return cursoRepository.findAll();
-
-	}
-
-	
-	private void existeDescricao(Curso curso, CursoRepository cursoRepository) {
-		List<Curso> findByDescricao = cursoRepository.findByDescricao(curso.getDescricao());
-		if (findByDescricao.size() > 0) {
-			throw new RuntimeException("Curso já cadastrado");
-		}
-
 	}
 
 	private void existeCategoria(Curso request, CategoriaRepository categoriaRepository) {
@@ -115,36 +107,74 @@ public class CursoService {
 	}
 
 	private void validaData(Curso request) {
-//		if (request.getInicio().isBefore(LocalDate.now())) {
-//			throw new RuntimeException("Data de inicio anterior a data atual");
-//		}
+
+		if (request.getInicio().isBefore(LocalDate.now())) {
+			throw new RuntimeException("Data de inicio menor que a data atual");
+		}
+
 		if (request.getInicio().isAfter(request.getTermino())) {
 			throw new RuntimeException("Data de início após data de término");
 		}
 		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 0) {
-			throw new RuntimeException("Já existe curso ocupando essa data");
+			throw new RuntimeException("Existe(m) curso(s) planejados(s) dentro do período informado.");
 		}
 	}
 
 	private void validaDataUpdate(Curso request) {
-//		if (request.getInicio().isBefore(LocalDate.now())) {
-//			throw new RuntimeException("Data de inicio anterior a data atual");
-//		}
+
+		List<Curso> cursosPorData = cursoRepository.cursosPorData(request.getInicio(), request.getTermino());
+		if (cursoRepository.contador(request.getInicio(), request.getTermino()) == 1) {
+			Boolean valido = false;
+			for (Curso curso : cursosPorData) {
+				if (curso.getId_curso().equals(request.getId_curso())) {
+					valido = true;
+				}
+			}
+			if (!valido)
+				throw new RuntimeException("Existe(m) curso(s) planejados(s) dentro do período informado.");
+		}
+
 		if (request.getInicio().isAfter(request.getTermino())) {
 			throw new RuntimeException("Data de início após data de término");
 		}
 		if (cursoRepository.contador(request.getInicio(), request.getTermino()) > 1) {
+			throw new RuntimeException("Existe(m) curso(s) planejados(s) dentro do período informado.");
+		}
+	}
 
-			throw new RuntimeException("Já existe curso ocupando essa data");
+	private void existeDescricaoUpdate(Curso request) {
+		List<Curso> findByDescricao = cursoRepository.findByDescricao(request.getDescricao());
+
+
+		if (findByDescricao.size() == 1) {
+			Boolean valido = false;
+			for (Curso curso : findByDescricao) {
+				System.out.println(request.getDescricao());
+				System.out.println(curso.getDescricao());
+				if (curso.getId_curso().equals(request.getId_curso())) {
+					valido = true;
+				}
+			}
+			if (!valido)
+				throw new RuntimeException("Curso já cadastrado.");
+		}
+	}
+
+	private void existeDescricao(Curso curso, CursoRepository cursoRepository) {
+		List<Curso> findByDescricao = cursoRepository.findByDescricao(curso.getDescricao());
+		if (findByDescricao.size() > 0) {
+			throw new RuntimeException("Curso já cadastrado.");
 		}
 	}
 
 	public void converter(Curso request, Curso curso) {
+		curso.setId_curso(request.getId_curso());
 		curso.setCategoria(request.getCategoria());
 		curso.setDescricao(request.getDescricao());
 		curso.setFinalizado(request.getFinalizado());
 		curso.setInicio(request.getInicio());
 		curso.setTermino(request.getTermino());
+		curso.setQuantidadeAlunos(request.getQuantidadeAlunos());
 	}
 
 	public void finalizado(Curso curso) {
@@ -155,17 +185,8 @@ public class CursoService {
 		}
 	}
 
-//	public List<Curso> listarPorData(LocalDate inicio, LocalDate termino) {
-//		 cursoRepository.findByTerminoBetween(inicio, termino);
-//		 cursoRepository.findByInicioBetween(inicio, termino);
-//		 List<Curso> cursos = new ArrayList<>();
-//		 cursos.addAll(cursoRepository.findByTerminoBetween(inicio, termino));
-//		 cursos.addAll(cursoRepository.findByInicioBetween(inicio, termino));
-//		 return cursos;
-//	}
-	
-	public List<Curso> listarPorData(LocalDate inicio, LocalDate termino) {		 
-		 return cursoRepository.cursosPorData(inicio, termino);
+	public List<Curso> listarPorData(LocalDate inicio, LocalDate termino) {
+		return cursoRepository.cursosPorData(inicio, termino);
 	}
 
 	public Optional<Curso> acharPorId(Integer id_curso) {
