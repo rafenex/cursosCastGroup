@@ -1,31 +1,58 @@
 package br.com.castgroup.cursos.dtos;
 
+import java.time.LocalDate;
 
 public class LogDTO {
 	private String nome;
 	private String descricao;
 	private Integer id_log;
-	private Integer id_curso;
 	private String acao;
-	private Integer idUsuario;
+	private LocalDate inclusao;
+	private LocalDate ultimaAtualizacao;
 
-	
-	
-	
-	public LogDTO(String nome, String descricao, Integer id_log, Integer id_curso, String acao, Integer idUsuario) {
+
+	public LogDTO(LocalDate inclusao, LocalDate ultimaAtualizacao,String nome, String descricao, Integer id_log, String acao) {
 		super();
 		this.nome = nome;
 		this.descricao = descricao;
-		this.id_log = id_log;
-		this.id_curso = id_curso;
 		this.acao = acao;
-		this.idUsuario = idUsuario;
+		this.inclusao = inclusao;
+		this.ultimaAtualizacao = ultimaAtualizacao;
+		this.id_log = id_log;
 	}
+
+	
 
 	public LogDTO() {
 
 	}
 	
+	
+	
+	public LocalDate getInclusao() {
+		return inclusao;
+	}
+
+
+
+	public void setInclusao(LocalDate inclusao) {
+		this.inclusao = inclusao;
+	}
+
+
+
+	public LocalDate getUltimaAtualizacao() {
+		return ultimaAtualizacao;
+	}
+
+
+
+	public void setUltimaAtualizacao(LocalDate ultimaAtualizacao) {
+		this.ultimaAtualizacao = ultimaAtualizacao;
+	}
+
+
+
 	public String getNome() {
 		return nome;
 	}
@@ -50,13 +77,8 @@ public class LogDTO {
 		this.id_log = id_log;
 	}
 
-	public Integer getId_curso() {
-		return id_curso;
-	}
 
-	public void setId_curso(Integer id_curso) {
-		this.id_curso = id_curso;
-	}
+
 
 	public String getAcao() {
 		return acao;
@@ -66,13 +88,7 @@ public class LogDTO {
 		this.acao = acao;
 	}
 
-	public Integer getIdUsuario() {
-		return idUsuario;
-	}
 
-	public void setIdUsuario(Integer idUsuario) {
-		this.idUsuario = idUsuario;
-	}
 	
 	
 	

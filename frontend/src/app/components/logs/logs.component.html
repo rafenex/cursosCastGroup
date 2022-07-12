@@ -11,25 +11,28 @@
 <table class="table table-hover table-sm table-bordered">
   <thead>
     <tr>
+      <th>ID Log</th>
       <th>Curso</th>
       <th>Usuario</th>
-      <th>ID Log</th>
-      <th>ID Curso</th>
       <th>Ação</th>
-      <th>ID Usuario</th>
+      <th>Inclusão</th>
+      <th>Ultima Atualização</th>
+
 
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let l of logs">
+      <td>{{l.id_log}}</td>
       <td>{{l.descricao}}</td>
       <td>{{l.nome}}</td>
-      <td>{{l.id_log}}</td>
-      <td>{{l.id_curso}}</td>
       <td>{{l.acao}}</td>
-      <td>{{l.idUsuario}}</td>
+      <td>{{l.inclusao | date : 'dd/MM/yyyy'}}</td>
+      <td>{{l.ultimaAtualizacao | date : 'dd/MM/yyyy'}}</td>
     </tr>
 
+  </tbody>
+</table>
 
 
-    <a class="btn btn botaodevoltar" href="javascript:history.back()">Voltar</a>
+<a class="mt-3 btn btn botaodevoltar" href="javascript:history.back()">Voltar</a>

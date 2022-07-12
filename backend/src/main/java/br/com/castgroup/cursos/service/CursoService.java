@@ -79,17 +79,6 @@ public class CursoService {
 			cursoRepository.save(curso);
 		}
 	}
-	
-	public void converter(Curso request, Curso curso) {
-		curso.setId_curso(request.getId_curso());
-		curso.setCategoria(request.getCategoria());
-		curso.setDescricao(request.getDescricao());
-		curso.setFinalizado(request.getFinalizado());
-		curso.setInicio(request.getInicio());
-		curso.setTermino(request.getTermino());
-		curso.setQuantidadeAlunos(request.getQuantidadeAlunos());
-
-	}
 
 	@Transactional
 	public void deletarCursoPorId(Integer id_curso) {
@@ -147,6 +136,9 @@ public class CursoService {
 			if (!valido)
 				throw new RuntimeException("Existe(m) curso(s) planejados(s) dentro do período informado.");
 		}
+//		if (request.getInicio().isBefore(LocalDate.now())) {
+//			throw new RuntimeException("Data de inicio menor que a data atual");
+//		}
 
 		if (request.getInicio().isAfter(request.getTermino())) {
 			throw new RuntimeException("Data de início após data de término");
