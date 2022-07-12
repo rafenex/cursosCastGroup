@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { LogService } from './log.service';
 import { Component, OnInit } from '@angular/core';
-import { AuthHelper } from 'src/app/_helpers/auth-helpers';
-import { environment } from 'src/environments/environment';
+
+
 
 @Component({
   selector: 'app-logs',
@@ -10,35 +10,41 @@ import { environment } from 'src/environments/environment';
 })
 export class LogsComponent implements OnInit {
 
-  page: any;
+  private page: number = 0;
   logs: any[] = [];
+  json: any;
+  pages: any[] = [];
+
+  constructor(private logService: LogService) {
+  }
 
 
-  constructor(private httpClient: HttpClient, private authHelper: AuthHelper) {
+  getLogs() {
+    this.logService.getLogsService(this.page).subscribe(
+      data => {
+        this.json = data;
+        this.logs = this.json.content;
+        this.pages = new Array(this.json['totalPages'])
+        console.log(this.logs);
 
+      },
+      (error) => {
+        console.log(error.error)
+      }
+    );
+  }
+  setPage(i: number, event: any) {
+    event.preventDefault();
+    this.page = i;
+    this.getLogs();
   }
 
 
 
-  ngOnInit(): void {
-    if (this.authHelper.isAuthenticated()) {
-      this.httpClient.get(
-        environment.apiUrl + '/logs?page=0&size=10&sort=id_log,desc')
-        .subscribe(
-          (data) => {
-            this.page = data;
-            console.log(this.page);
-            this.logs = this.page.content;
-          },
-          (e) => {
-            console.log(e);
-          }
-        )
-    } else {
-      window.alert("Acesso negado");
-      window.location.href = "/";
-    }
+  ngOnInit() {
 
+    this.getLogs();
   }
+
 
 }

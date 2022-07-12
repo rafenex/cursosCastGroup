@@ -15,6 +15,9 @@ import { TokenInterceptor } from './_intercepters/tokenInterceptor';
 import { AuthHelper } from './_helpers/auth-helpers';
 import { PaginaPrincipalComponent } from './components/pagina-principal/pagina-principal.component';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { LogService } from './components/logs/log.service';
+
 
 
 @NgModule({
@@ -36,10 +39,12 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
     FormsModule,
     Ng2SearchPipeModule,
     ReactiveFormsModule,
+    NgxPaginationModule
 
 
   ],
   providers: [
+    LogService,
     {
       //Config do interceptor
       provide: HTTP_INTERCEPTORS,
