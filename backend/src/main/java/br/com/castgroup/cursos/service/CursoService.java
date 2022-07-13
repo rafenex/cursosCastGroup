@@ -60,15 +60,15 @@ public class CursoService {
 		if (item.isEmpty()) {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
-			Curso curso = item.get();		
+			Curso curso = item.get();
 			System.out.println(curso.getInclusao());
 			validaDataUpdate(request);
-			existeDescricaoUpdate(request);	
+			existeDescricaoUpdate(request);
 //			converter(request, curso);
 			request.setInclusao(curso.getInclusao());
 			BeanUtils.copyProperties(request, curso);
-			
-			finalizado(curso);		
+
+			finalizado(curso);
 
 			existeCategoria(curso, categoriaRepository);
 
@@ -99,7 +99,9 @@ public class CursoService {
 	}
 
 	public List<Curso> acharTodos() {
+		checarTerminoCurso();
 		return cursoRepository.findAll();
+
 	}
 
 	private void existeCategoria(Curso request, CategoriaRepository categoriaRepository) {
@@ -124,7 +126,6 @@ public class CursoService {
 	}
 
 	private void validaDataUpdate(Curso request) {
-
 		List<Curso> cursosPorData = cursoRepository.cursosPorData(request.getInicio(), request.getTermino());
 		if (cursoRepository.contador(request.getInicio(), request.getTermino()) == 1) {
 			Boolean valido = false;
@@ -136,10 +137,6 @@ public class CursoService {
 			if (!valido)
 				throw new RuntimeException("Existe(m) curso(s) planejados(s) dentro do período informado.");
 		}
-//		if (request.getInicio().isBefore(LocalDate.now())) {
-//			throw new RuntimeException("Data de inicio menor que a data atual");
-//		}
-
 		if (request.getInicio().isAfter(request.getTermino())) {
 			throw new RuntimeException("Data de início após data de término");
 		}
@@ -150,7 +147,6 @@ public class CursoService {
 
 	private void existeDescricaoUpdate(Curso request) {
 		List<Curso> findByDescricao = cursoRepository.findByDescricao(request.getDescricao());
-
 
 		if (findByDescricao.size() == 1) {
 			Boolean valido = false;
@@ -171,6 +167,20 @@ public class CursoService {
 		if (findByDescricao.size() > 0) {
 			throw new RuntimeException("Curso já cadastrado.");
 		}
+	}
+
+	public void checarTerminoCurso() {
+		List<Curso> lista = cursoRepository.findAll();
+		for (Curso curso : lista) {
+			if (curso.getTermino().isBefore(LocalDate.now())) {
+				System.out.println(curso.getDescricao());
+				curso.setFinalizado(true);
+				cursoRepository.save(curso);
+			} else {
+				curso.setFinalizado(false);
+			}	
+		}
+
 	}
 
 	public void finalizado(Curso curso) {
@@ -203,16 +213,15 @@ public class CursoService {
 	}
 
 	public List<Curso> filtrar(String descricao, LocalDate inicio, LocalDate termino) {
-		if(descricao != null) {
+		if (descricao != null) {
 			return cursoRepository.findByDescricao(descricao);
-		}  
-		if(inicio != null) {
+		}
+		if (inicio != null) {
 			return cursoRepository.findByInicioBetween(inicio, termino);
 		}
-	
-		
+
 		return cursoRepository.findAll();
-		
+
 	}
 
 }

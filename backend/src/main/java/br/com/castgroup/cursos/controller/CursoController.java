@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.castgroup.cursos.entities.Curso;
-import br.com.castgroup.cursos.repository.CursoRepository;
 import br.com.castgroup.cursos.service.CursoService;
 import io.swagger.annotations.ApiOperation;
 
