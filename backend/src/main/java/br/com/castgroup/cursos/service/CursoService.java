@@ -202,4 +202,17 @@ public class CursoService {
 
 	}
 
+	public List<Curso> filtrar(String descricao, LocalDate inicio, LocalDate termino) {
+		if(descricao != null) {
+			return cursoRepository.findByDescricao(descricao);
+		}  
+		if(inicio != null) {
+			return cursoRepository.findByInicioBetween(inicio, termino);
+		}
+	
+		
+		return cursoRepository.findAll();
+		
+	}
+
 }
