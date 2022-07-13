@@ -1,3 +1,4 @@
+import { ConsultarCursosService } from './consultar-cursos.service';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -19,7 +20,7 @@ export class ConsultarCursosComponent implements OnInit {
 
   cursos: any[] = [];
 
-  constructor(private httpClient: HttpClient, private authHelper: AuthHelper) {
+  constructor(private httpClient: HttpClient, private authHelper: AuthHelper, private service: ConsultarCursosService) {
 
   }
 
@@ -59,42 +60,61 @@ export class ConsultarCursosComponent implements OnInit {
 
 
   onSubmit(): void {
-    this.filtroDate(this.inicio, this.termino);
+    this.inicio = this.formFiltroData.value.inicio;
+    this.termino = this.formFiltroData.value.termino;
+    this.getCursos();
   }
 
   onSubmitD(): void {
-    this.filtroDescricao(this.descricao);
+    this.descricao = this.formFiltroDescricao.value.descricao;
+    this.getCursos();
   }
 
-  filtroDate(inicio: any, termino: any) {
-    inicio = this.formFiltroData.value.inicio;
-    termino = this.formFiltroData.value.termino;
-    this.httpClient.get(
-      environment.apiUrl + '/cursos/data/' + inicio + '/' + termino)
-      .subscribe(
-        (data) => {
-          this.cursos = data as any[];
-
-        },
-        (e) => {
-          this.mensagem = e.error;
-        }
-      )
+  getCursos() {
+    this.service.filtroPorDataOuDescricao(this.inicio, this.termino, this.descricao).subscribe(
+      data => {
+        this.cursos = data as any;
+      },
+      (error) => {
+        console.log(error.error)
+      }
+    );
   }
 
-  filtroDescricao(descricao: string) {
-    descricao = this.formFiltroDescricao.value.descricao!;
-    this.httpClient.get(
-      environment.apiUrl + '/cursos/nome/' + descricao)
-      .subscribe(
-        (data) => {
-          this.cursos = data as any[];
-        },
-        (e) => {
-          this.mensagem = e.error;
-        }
-      )
-  }
+
+
+
+
+  // filtroDescricao(descricao: string) {
+  //   descricao = this.formFiltroDescricao.value.descricao!;
+  //   this.httpClient.get(
+  //     environment.apiUrl + '/cursos/nome/' + descricao)
+  //     .subscribe(
+  //       (data) => {
+  //         this.cursos = data as any[];
+  //       },
+  //       (e) => {
+  //         this.mensagem = e.error;
+  //       }
+  //     )
+  // }
+
+  // filtroDate(inicio: any, termino: any) {
+  //   inicio = this.formFiltroData.value.inicio;
+  //   termino = this.formFiltroData.value.termino;
+  //   this.httpClient.get(
+  //     environment.apiUrl + '/cursos/data/' + inicio + '/' + termino)
+  //     .subscribe(
+  //       (data) => {
+  //         this.cursos = data as any[];
+
+  //       },
+  //       (e) => {
+  //         this.mensagem = e.error;
+  //       }
+  //     )
+  // }
+
 
   excluir(idCurso: number): void {
     if (window.confirm('Deseja realmente excluir o aluno selecionado?')) {

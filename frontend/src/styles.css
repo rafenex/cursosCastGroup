@@ -7,3 +7,11 @@
   background-color: #330449;
   color: white;
 }
+
+.right {
+  margin: auto 0 auto auto;
+}
+
+.center {
+  margin: auto
+}

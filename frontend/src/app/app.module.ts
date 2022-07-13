@@ -17,6 +17,7 @@ import { PaginaPrincipalComponent } from './components/pagina-principal/pagina-p
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { LogService } from './components/logs/log.service';
+import { ConsultarCursosService } from './components/consultar-cursos/consultar-cursos.service';
 
 
 
@@ -38,13 +39,13 @@ import { LogService } from './components/logs/log.service';
     HttpClientModule,
     FormsModule,
     Ng2SearchPipeModule,
-    ReactiveFormsModule,
-    NgxPaginationModule
+    ReactiveFormsModule
 
 
   ],
   providers: [
     LogService,
+    ConsultarCursosService,
     {
       //Config do interceptor
       provide: HTTP_INTERCEPTORS,

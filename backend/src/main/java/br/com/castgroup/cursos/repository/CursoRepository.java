@@ -3,18 +3,20 @@ package br.com.castgroup.cursos.repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import br.com.castgroup.cursos.entities.Curso;
 
 
 public interface CursoRepository extends JpaRepository<Curso, Integer>{
 	
-	List<Curso> findByDescricao(String descricao);
-	
-	List<Curso> findByInicioBetween(LocalDate dataInicioStart, LocalDate dataInicoEnd);
-	List<Curso> findByTerminoBetween(LocalDate dataInicioStart, LocalDate dataInicoEnd);
+	List<Curso> findByDescricao(String descricao);	
+	List<Curso> findByInicioBetween(LocalDate inicio, LocalDate termino);
+	List<Curso> findByTerminoBetween(LocalDate inicio, LocalDate termino);
 	
 	@Query("select count(*) from Curso c where (:inicio <= c.inicio and :termino >= c.inicio)"
 			+ "OR"
@@ -30,5 +32,9 @@ public interface CursoRepository extends JpaRepository<Curso, Integer>{
 			+ "								   (:inicio >= c.inicio and :termino <= c.termino)")	
 	List<Curso> cursosPorData(LocalDate inicio, LocalDate termino);
 	
+	
+
+
+
 
 }

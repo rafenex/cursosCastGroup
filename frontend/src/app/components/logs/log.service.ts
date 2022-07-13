@@ -9,7 +9,13 @@ export class LogService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getLogsService(page: number) {
-    return this.httpClient.get(environment.apiUrl + '/logs?page=' + page)
+  getLogsService(page: number, descricao: string, size: number) {
+
+    if (descricao == null) { return this.httpClient.get(environment.apiUrl + '/logs?page=' + page + '&size=' + size) }
+    else {
+      return this.httpClient.get(environment.apiUrl + '/logs?descricao=' + descricao + '&page=' + page + '&size=' + size)
+    }
+
+
   }
 }
