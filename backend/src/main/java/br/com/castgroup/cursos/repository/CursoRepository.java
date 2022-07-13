@@ -12,9 +12,7 @@ import br.com.castgroup.cursos.entities.Curso;
 public interface CursoRepository extends JpaRepository<Curso, Integer>{
 	
 	List<Curso> findByDescricao(String descricao);	
-	List<Curso> findByInicioBetween(LocalDate inicio, LocalDate termino);
-	List<Curso> findByTerminoBetween(LocalDate inicio, LocalDate termino);
-	
+
 	@Query("select count(*) from Curso c where (:inicio <= c.inicio and :termino >= c.inicio)"
 			+ "OR"
 			+ "								   (:inicio <= c.termino and :termino >= c.termino)"
@@ -30,8 +28,16 @@ public interface CursoRepository extends JpaRepository<Curso, Integer>{
 	List<Curso> cursosPorData(LocalDate inicio, LocalDate termino);
 	
 	
-
-
+	@Query("select c from Curso c where ((:inicio <= c.inicio and :termino >= c.inicio)"
+			+ "OR"
+			+ "								   (:inicio <= c.termino and :termino >= c.termino)"
+			+ "OR"
+			+ "								   (:inicio >= c.inicio and :termino <= c.termino))"
+			+ "AND                             						 (:descricao = c.descricao)")	
+	List<Curso> cursosPorDataEDescricao(String descricao, LocalDate inicio, LocalDate termino);
+	
+	
+	List<Curso> findByDescricaoAndFinalizado(String descricao, Boolean finalizado);
 
 
 }

@@ -27,6 +27,7 @@ export class LogsComponent implements OnInit {
         this.json = data;
         this.totalElements = this.json.totalElements;
         this.logs = this.json.content;
+        console.log(this.logs);
         this.pages = new Array(this.json['totalPages'])
       },
       (error) => {

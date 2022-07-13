@@ -9,20 +9,22 @@ export class ConsultarCursosService {
 
   constructor(private httpClient: HttpClient) { }
 
+
+
+
   filtroPorDataOuDescricao(inicio: any, termino: any, descricao: string) {
-
-    if (descricao != null) {
-      return this.httpClient.get(environment.apiUrl + '/cursos/filtro?descricao=' + descricao)
-    }
-
+    var url = environment.apiUrl + '/cursos/filtro?'
     if (inicio != null) {
-      return this.httpClient.get(environment.apiUrl + '/cursos/filtro?inicio=' + inicio + '&termino=' + termino)
+      url += "&inicio=" + inicio;
+    }
+    if (termino != null) {
+      url += "&termino=" + termino;
+    }
+    if (descricao != '') {
+      url += "&descricao=" + descricao;
     }
 
-
-    return this.httpClient.get(environment.apiUrl + '/cursos')
-
-
+    return this.httpClient.get(url);
 
   }
 }

@@ -12,20 +12,17 @@ import org.springframework.data.repository.query.Param;
 import br.com.castgroup.cursos.dtos.LogDTO;
 import br.com.castgroup.cursos.entities.Log;
 
-public interface LogRepository extends JpaRepository<Log, Integer>{
+public interface LogRepository extends JpaRepository<Log, Integer>{   
 	   
-	   
-	@Query("SELECT new br.com.castgroup.cursos.dtos.LogDTO(l.inclusao, l.ultimaAtualizacao, u.nome, c.descricao, l.id_log, l.acao) "
+	@Query("SELECT new br.com.castgroup.cursos.dtos.LogDTO(l.inclusao, l.ultimaAtualizacao, u.nome, c.descricao, l.id_log, c.id_curso, l.acao) "
 			+ "from Log l join Usuario u on u.idUsuario = l.usuario.idUsuario"
 			+ " join Curso c on c.id_curso = l.curso.id_curso")	
 	Page<LogDTO> listarLogs(Pageable paginacao);
 	
 	
-	@Query("SELECT new br.com.castgroup.cursos.dtos.LogDTO(l.inclusao, l.ultimaAtualizacao, u.nome, c.descricao, l.id_log, l.acao) "
+	@Query("SELECT new br.com.castgroup.cursos.dtos.LogDTO(l.inclusao, l.ultimaAtualizacao, u.nome, c.descricao, l.id_log,c.id_curso, l.acao) "
 			+ "from Log l join Usuario u on u.idUsuario = l.usuario.idUsuario"
 			+ " join Curso c on c.id_curso = l.curso.id_curso"
 			+ " WHERE c.descricao like %:descricao%")	
-	Page<LogDTO> listarPorDescricao(Pageable paginacao, @Param("descricao") String descricao);
-
-	
+	Page<LogDTO> listarPorDescricao(Pageable paginacao, @Param("descricao") String descricao);	
 }

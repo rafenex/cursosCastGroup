@@ -7,9 +7,34 @@
     </div>
   </div>
 
-  <div class="col-md-2 mb-3 right">
-    <button class="btn botaodevoltar form-control" routerLink="/cadastrar-cursos">Adicionar</button>
+  <div>
+    <form [formGroup]="formFiltroData" (ngSubmit)="(onSubmit())">
+      <div class="row mb-3">
+        <div class="col-md-2">
+          <label>Desde:</label>
+          <input type="date" class="form-control" formControlName="inicio" />
+        </div>
+        <div class="col-md-2">
+          <label>Até:</label>
+          <input type="date" class="form-control" formControlName="termino" />
+        </div>
+        <div class="col-md-2">
+          <label> Descrição:</label>
+          <input type="text" class="form-control" formControlName="descricao" />
+        </div>
+        <div class="col-md-2 mt-4">
+          <input type="submit" class="btn btn-dark" style="margin-right: 5px;" value="Filtrar" />
+          <input type="button" class="btn btn-secondary" (click)="resetar()" value="Resetar" />
+        </div>
+        <div class="col-md-2 mt-4 right">
+          <button class="btn botaodevoltar form-control" routerLink="/cadastrar-cursos">Adicionar</button>
+        </div>
+      </div>
+    </form>
   </div>
+
+
+
 
 </div>
 
@@ -21,7 +46,7 @@
       <th>Início</th>
       <th>Término</th>
       <th>Alunos</th>
-      <th>Ações</th>
+      <th class="text-center">Ações</th>
 
     </tr>
   </thead>
@@ -32,7 +57,7 @@
       <td>{{c.inicio | date : 'dd/MM/yyyy'}}</td>
       <td>{{c.termino | date : 'dd/MM/yyyy'}}</td>
       <td>{{c.quantidadeAlunos}}</td>
-      <td>
+      <td class="text-center">
         <button *ngIf="!c.finalizado" class="btn btn-dark btn-sm botaoeditar"
           [routerLink]="['/editar-cursos',c.id_curso]">Editar</button>
         &nbsp;
@@ -66,46 +91,16 @@
 </table>
 
 
-<div>
-  <form [formGroup]="formFiltroData" (ngSubmit)="(onSubmit())">
-    <div class="row mb-3">
-      <div class="col-md-3">
-        <label>Data de início:</label>
-        <input type="date" class="form-control" formControlName="inicio" required="true" />
-      </div>
-      <div class="col-md-3">
-        <label>Data de término:</label>
-        <input type="date" class="form-control" formControlName="termino" required="true" />
-      </div>
-      <div class="col-md-3 mt-4">
-        <input type="submit" [disabled]="!formFiltroData.valid" class="btn btn-dark" value="Filtrar por data" />
-      </div>
-    </div>
-  </form>
-</div>
 
-<form [formGroup]="formFiltroDescricao" (ngSubmit)="(onSubmitD())">
-  <div class="row mb-3">
-    <div class="col-md-3">
-      <label> Descrição:</label>
-      <input type="text" class="form-control" formControlName="descricao" required="true" />
-    </div>
-    <div class="col-md-3 mt-4">
-      <input type="submit" [disabled]="!formFiltroDescricao.valid" class="btn btn-dark" value="Filtrar por Descrição" />
-    </div>
-  </div>
-</form>
-
-
-<div class="row mb-3 col-md-3 mt-4">
+<!-- <div class="row mb-3 col-md-3 mt-4">
   <div class="col md-4">
     <input type="text" class="form-control" placeholder="Nome" [(ngModel)]="filtro" />
   </div>
-</div>
+</div> -->
 
 <div class="row">
   <div class="col-md-2 mb-3">
-    <a class="btn btn botaodevoltar" href="javascript:history.back()">Voltar</a>
+    <button class="btn botaodevoltar" routerLink="/pagina-inicial">Voltar</button>
   </div>
   <div class="col-md-1 mb-3 right">
     <button class="btn botaodevoltar form-control" routerLink="/logs">Logs</button>

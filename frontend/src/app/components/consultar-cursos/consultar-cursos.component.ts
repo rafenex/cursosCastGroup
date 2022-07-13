@@ -27,7 +27,7 @@ export class ConsultarCursosComponent implements OnInit {
   ngOnInit(): void {
     if (this.authHelper.isAuthenticated()) {
       this.httpClient.get(
-        environment.apiUrl + '/cursos')
+        environment.apiUrl + '/cursos/filtro')
         .subscribe(
           (data) => {
             this.cursos = data as any[];
@@ -46,29 +46,25 @@ export class ConsultarCursosComponent implements OnInit {
   formFiltroData = new FormGroup({
     inicio: new FormControl(''),
     termino: new FormControl(''),
+    descricao: new FormControl(''),
   })
   get form(): any {
     return this.formFiltroData.controls;
   }
 
-  formFiltroDescricao = new FormGroup({
-    descricao: new FormControl(''),
-  })
-  get formD(): any {
-    return this.formFiltroDescricao.controls;
-  }
 
+
+  resetar(): void {
+    this.formFiltroData.reset();
+  }
 
   onSubmit(): void {
     this.inicio = this.formFiltroData.value.inicio;
     this.termino = this.formFiltroData.value.termino;
+    this.descricao = this.formFiltroData.value.descricao;
     this.getCursos();
   }
 
-  onSubmitD(): void {
-    this.descricao = this.formFiltroDescricao.value.descricao;
-    this.getCursos();
-  }
 
   getCursos() {
     this.service.filtroPorDataOuDescricao(this.inicio, this.termino, this.descricao).subscribe(
