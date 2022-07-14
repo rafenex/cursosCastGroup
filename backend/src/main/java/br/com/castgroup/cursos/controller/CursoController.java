@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.castgroup.cursos.entities.Curso;
 import br.com.castgroup.cursos.service.CursoService;
 import io.swagger.annotations.ApiOperation;
+
 
 @CrossOrigin
 @RestController
@@ -105,14 +107,22 @@ public class CursoController {
 		}	
 	}
 	
+	
+
+
+		
 	@ApiOperation("Serviço para filtrar cursos")
 	@GetMapping(value="/filtro")
-	public List<Curso> listar(
+	public Page<Curso> listar(
 							   @RequestParam(required = false) String descricao,
-							   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
-							   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate termino){
-			return cursoService.filtrar(descricao, inicio, termino);
+							   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
+							   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino,
+							   @PageableDefault(direction = Direction.ASC, page = 0, size = 3)
+							   Pageable paginacao){
+			return cursoService.filtrar(descricao, inicio, termino, paginacao);	
 	}
+
+
 	
 //	@ApiOperation("Serviço para filtrar cursos")
 //	@GetMapping(value="/filtro")

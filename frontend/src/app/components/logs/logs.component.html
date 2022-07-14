@@ -26,12 +26,10 @@
 
 
 <ul class="nav nav-pills">
-
   <span class="mt-2">Páginas: </span>
   <li class="nav-item" *ngFor="let p of pages; let i=index">
     <a class="nav-link text-dark" href="" (click)="setPage(i,$event)">{{i+1}}</a>
   </li>
-
   <div>
     <select class="form-select" [(ngModel)]="size">
       <option value="0">Itens por página</option>
@@ -41,8 +39,6 @@
       <option value="{{totalElements}}">Todos</option>
     </select>
   </div>
-
-
 </ul>
 
 

@@ -11,8 +11,7 @@ export class ConsultarCursosService {
 
 
 
-
-  filtroPorDataOuDescricao(inicio: any, termino: any, descricao: string) {
+  filtroPorDataOuDescricao(inicio: any, termino: any, descricao: string, page: number, size: number) {
     var url = environment.apiUrl + '/cursos/filtro?'
     if (inicio != null) {
       url += "&inicio=" + inicio;
@@ -20,9 +19,16 @@ export class ConsultarCursosService {
     if (termino != null) {
       url += "&termino=" + termino;
     }
-    if (descricao != '') {
+    if (page != null) {
+      url += "&page=" + page;
+    }
+    if (size != null) {
+      url += "&size=" + size;
+    }
+    if (descricao != null) {
       url += "&descricao=" + descricao;
     }
+    console.log(url);
 
     return this.httpClient.get(url);
 

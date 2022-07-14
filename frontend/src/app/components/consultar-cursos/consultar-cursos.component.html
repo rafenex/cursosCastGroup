@@ -78,7 +78,7 @@
   </tbody>
   <tfoot>
     <tr>
-      <td colspan=" 6">Total de registros: {{cursos.length}}
+      <td colspan=" 6">Registros da página: {{size}}
 
       </td>
     </tr>
@@ -91,12 +91,24 @@
 </table>
 
 
+<div class="row col-md-3">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+      <li *ngFor="let p of pages; let i=index" class="page-item">
+        <a class="page-link" href="" (click)="setPage(i,$event)">{{i+1}}</a>
+      </li> &nbsp; &nbsp; &nbsp; &nbsp;
+      <li>
+        <select class="form-select" [(ngModel)]="size" (change)="getSelectedSkill()">
+          <option [ngValue]="5">5</option>
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="15">15</option>
+          <option [ngValue]="totalElements">Todos</option>
+        </select>
+      </li>
+    </ul>
+  </nav>
+</div>
 
-<!-- <div class="row mb-3 col-md-3 mt-4">
-  <div class="col md-4">
-    <input type="text" class="form-control" placeholder="Nome" [(ngModel)]="filtro" />
-  </div>
-</div> -->
 
 <div class="row">
   <div class="col-md-2 mb-3">
@@ -105,5 +117,4 @@
   <div class="col-md-1 mb-3 right">
     <button class="btn botaodevoltar form-control" routerLink="/logs">Logs</button>
   </div>
-
 </div>

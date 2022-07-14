@@ -15,4 +15,6 @@ public class CorsConfiguration extends WebMvcConfigurerAdapter{
 		.allowedOrigins("*")
 		.allowedMethods("GET","POST","PUT","DELETE");
 	}
+	
+	
 }

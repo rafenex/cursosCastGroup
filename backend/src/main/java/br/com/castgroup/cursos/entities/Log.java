@@ -18,9 +18,10 @@ public class Log {
 	private Integer id_log;
 	private LocalDate inclusao;
 	private LocalDate ultimaAtualizacao;
+	private String acao;	
+	
 	@ManyToOne
 	private Curso curso;
-	private String acao;	
 
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)

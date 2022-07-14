@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -16,6 +15,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.castgroup.cursos.entities.Categoria;
@@ -135,48 +137,45 @@ public class CursoService {
 		return listaDeCursos;
 	}
 
-//	public List<Curso> filtrar(String descricao, LocalDate inicio, LocalDate termino) {
-//		if((inicio != null) && (termino != null) && (descricao!= null)) {
-//			checarTerminoCurso();
-//			return cursoRepository.cursosPorDataEDescricao(descricao, inicio, termino);		
-//		} 
-//		if((inicio != null) && (termino != null) && (descricao == null)) {
-//			checarTerminoCurso();
-//			return cursoRepository.cursosPorData(inicio, termino);
-//		} 		
-//		if((inicio == null) && (termino == null) && (descricao != null)) {
-//			checarTerminoCurso();
-//			return cursoRepository.findByDescricao(descricao);
-//		} 		
-//		checarTerminoCurso();
-//			return cursoRepository.findAll();
-//		}
-		
-	public List<Curso> filtrar(String descricao, LocalDate inicio, LocalDate termino){
+
+	public Page<Curso> filtrar(String descricao, LocalDate inicio, LocalDate termino, Pageable pagina){
 		CriteriaBuilder cb = em.getCriteriaBuilder(); //constroi CB
 		CriteriaQuery<Curso> cq = cb.createQuery(Curso.class); //QUERY CURSO
-		Root<Curso> curso = cq.from(Curso.class); // SELECT * FROM CURSO
+		Root<Curso> cursoRoot = cq.from(Curso.class); // SELECT * FROM CURSO
 		List<Predicate>predicates = new ArrayList<>(); //pode ser vazia ou nao
 		if (descricao != null) {
-			Predicate descricaoPredicate = cb.equal(curso.get("descricao"), descricao);
+			Predicate descricaoPredicate = cb.equal(cursoRoot.get("descricao"), descricao);
 			predicates.add(descricaoPredicate);
 		}
 		if (inicio !=null) {
-			Predicate inicioPredicate = cb.greaterThanOrEqualTo(curso.get("inicio"), inicio);
+			Predicate inicioPredicate = cb.greaterThanOrEqualTo(cursoRoot.get("inicio"), inicio);
 			predicates.add(inicioPredicate);
 		}
 		if (termino !=null) {
-			Predicate descricaoPredicate = cb.lessThanOrEqualTo(curso.get("termino"), termino);
+			Predicate descricaoPredicate = cb.lessThanOrEqualTo(cursoRoot.get("termino"), termino);
 			predicates.add(descricaoPredicate);
-		}
+		}				
 		Predicate[]predicateArr = new Predicate[predicates.size()];
 		predicates.toArray(predicateArr);
 		cq.where(predicateArr);
-		TypedQuery<Curso>query = em.createQuery(cq);
-		return query.getResultList();
+		cq.orderBy(cb.desc(cursoRoot.get("inclusao")));
 		
-	}
+		List<Curso> result = em.createQuery(cq).setFirstResult((int) pagina.getOffset()).setMaxResults(pagina.getPageSize()).getResultList();
 		
+		// Create Count Query
+        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+        Root<Curso> cursosRootCount = countQuery.from(Curso.class);
+        countQuery.select(cb.count(cursosRootCount)).where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+        
+       // Fetches the count of all Cursos as per given criteria
+        Long count = em.createQuery(countQuery).getSingleResult();
+        
+        Page<Curso> result1 = new PageImpl<>(result, pagina, count);
+        return result1;
+	
+        
+	}	
+ 
 
 	
 	//Validações		
@@ -224,6 +223,7 @@ public class CursoService {
 
 	private void existeDescricaoUpdate(Curso request) {
 		List<Curso> findByDescricao = cursoRepository.findByDescricao(request.getDescricao());
+		System.out.println(findByDescricao.size());
 		if (findByDescricao.size() == 2) {
 			Boolean valido = false;
 			for (Curso curso : findByDescricao) {
@@ -255,8 +255,7 @@ public class CursoService {
 	private void existeDescricao(Curso curso) {
 		List<Curso> findByDescricao = cursoRepository.findByDescricao(curso.getDescricao());
 		List<Curso> naoFinalizado = cursoRepository.findByDescricaoAndFinalizado(curso.getDescricao(),false);
-		System.out.println(naoFinalizado.size());
-		System.out.println(findByDescricao.size());
+
 		if ((findByDescricao.size() > 0) && (naoFinalizado.size()>0)) {
 			throw new RuntimeException("Curso já cadastrado.");
 		}
