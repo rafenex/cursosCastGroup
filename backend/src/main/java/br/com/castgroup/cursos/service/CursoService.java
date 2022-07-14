@@ -61,6 +61,7 @@ public class CursoService {
 		existeCategoria(curso);
 		existeDescricao(curso);
 		finalizado(curso);
+		validaCampos(curso);
 		@SuppressWarnings("deprecation")
 		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso, "Cadastrou Curso",
 				usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
@@ -69,6 +70,8 @@ public class CursoService {
 		cursoRepository.save(curso);
 	}
 
+
+
 	@Transactional
 	public void atualizarCurso(Curso request, Integer id_curso) {
 		Optional<Curso> item = cursoRepository.findById(id_curso);
@@ -76,7 +79,10 @@ public class CursoService {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
 			Curso curso = item.get();
-			System.out.println(curso.getInclusao());
+			if (curso.getFinalizado()) {
+				throw new RuntimeException("Curso finalizado não pode ser editado");
+			}
+			existeDescricao(curso);
 			validaDataUpdate(request);
 			existeDescricaoUpdate(request);
 			request.setInclusao(curso.getInclusao());
@@ -185,6 +191,16 @@ public class CursoService {
 
 	
 	//Validações		
+	
+	private void validaCampos(Curso request) {
+		if((request.getDescricao().isEmpty())||
+			(request.getDescricao().isEmpty()||
+			(request.getInicio() == null)||
+			(request.getTermino() == null)||
+			(request.getCategoria() == null))) {
+			throw new RuntimeException("Preencher os campos obrigatórios");
+		}
+	}
 
 	private void validaData(Curso request) {
 
@@ -230,7 +246,7 @@ public class CursoService {
 	private void existeDescricaoUpdate(Curso request) {
 		List<Curso> findByDescricao = cursoRepository.findByDescricao(request.getDescricao());
 		System.out.println(findByDescricao.size());
-		if (findByDescricao.size() == 2) {
+		if (findByDescricao.size() >= 2) {
 			Boolean valido = false;
 			for (Curso curso : findByDescricao) {
 				if (curso.getId_curso().equals(request.getId_curso())) {

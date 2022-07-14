@@ -18,12 +18,13 @@ public class Curso {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id_curso;
 
+
 	@NotNull
 	private String descricao;
 	
-	@NotNull
+	@NotNull(message= "O campo não pode ser nulo")
 	private LocalDate inicio;
-	@NotNull
+	@NotNull(message= "O campo não pode ser nulo")
 	private LocalDate termino;
 	
 	private Boolean finalizado;
@@ -32,6 +33,7 @@ public class Curso {
 	
 	@ManyToOne
 	@JoinColumn
+	@NotNull(message= "O campo não pode ser nulo")
 	private Categoria categoria;
 	
 	

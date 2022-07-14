@@ -10,6 +10,7 @@ export class ConsultarCursosService {
   constructor(private httpClient: HttpClient) { }
 
 
+
   filtroPorDataOuDescricao(inicio: any, termino: any, descricao: any, page: any, size: number, sort: string, order: string) {
     var url = environment.apiUrl + '/cursos/filtro?'
     if (inicio != null) {

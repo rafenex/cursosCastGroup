@@ -11,10 +11,11 @@ import { EditarCursosComponent } from './components/editar-cursos/editar-cursos.
 import { LogsComponent } from './components/logs/logs.component';
 
 const routes: Routes = [
+  { path: 'login', component: LoginComponent },
   { path: 'cadastrar-cursos', component: CadastrarCursosComponent },
   { path: 'consultar-cursos', component: ConsultarCursosComponent },
   { path: 'editar-cursos/:id', component: EditarCursosComponent },
-  { path: '', component: LoginComponent },
+  { path: '', component: PaginaPrincipalComponent },
   { path: 'account', component: AccountComponent },
   { path: 'pagina-inicial', component: PaginaPrincipalComponent },
   { path: 'logs', component: LogsComponent }

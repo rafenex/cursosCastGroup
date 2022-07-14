@@ -58,6 +58,13 @@ export class ConsultarCursosComponent implements OnInit {
   }
 
 
+  setInicio(inicio: any, event: any) {
+    event.preventDefault();
+    this.inicio = inicio.value;
+    console.log(this.inicio)
+    this.getCursos();
+  }
+
   setPage(i: number, event: any) {
     event.preventDefault();
     this.page = i;
@@ -97,12 +104,18 @@ export class ConsultarCursosComponent implements OnInit {
     if (this.formFiltroData.value.descricao) {
       this.descricao = this.formFiltroData.value.descricao;
     }
-
     this.getCursos();
+
   }
 
 
+
+
   getCursos() {
+    if (!this.authHelper.isAuthenticated()) {
+      window.alert("Acesso negado");
+      window.location.href = "/";
+    }
     this.service.filtroPorDataOuDescricao(this.inicio, this.termino, this.descricao, this.page, this.size, this.sort, this.order).subscribe(
       data => {
         this.cursos = data as any;
