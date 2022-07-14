@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./consultar-cursos.component.css']
 })
 export class ConsultarCursosComponent implements OnInit {
-  size = 10;
+  order = 'asc';
   termino: any;
   inicio: any;
   descricao: any;
@@ -19,9 +19,11 @@ export class ConsultarCursosComponent implements OnInit {
   filtro = "";
   json: any;
   totalElements!: number;
-  page = 0;
+  page: any;
   pages: any[] = [];
   cursos: any[] = [];
+  size = 10;
+  sort = 'inclusao';
 
   constructor(private httpClient: HttpClient, private authHelper: AuthHelper, private service: ConsultarCursosService) {
 
@@ -38,11 +40,24 @@ export class ConsultarCursosComponent implements OnInit {
   getSelectedSkill() {
     this.getCursos()
   }
-
-
-  onEditClick(skill: any) {
-    console.log('skill name', skill)
+  getSelectedOrder() {
+    this.getCursos()
   }
+
+
+  getSelectedSort() {
+    this.getCursos()
+  }
+
+
+
+  setOrder(order: string, event: any) {
+    event.preventDefault();
+    this.order = order;
+    this.getCursos();
+  }
+
+
   setPage(i: number, event: any) {
     event.preventDefault();
     this.page = i;
@@ -64,24 +79,38 @@ export class ConsultarCursosComponent implements OnInit {
 
   resetar(): void {
     this.formFiltroData.reset();
+    this.page = null;
+    this.descricao = null;
+    this.size = 10;
+    this.inicio = null;
+    this.termino = null;
+    this.getCursos();
   }
 
   onSubmit(): void {
-    this.inicio = this.formFiltroData.value.inicio;
-    this.termino = this.formFiltroData.value.termino;
-    this.descricao = this.formFiltroData.value.descricao;
+    if (this.formFiltroData.value.inicio) {
+      this.inicio = this.formFiltroData.value.inicio;
+    }
+    if (this.formFiltroData.value.termino) {
+      this.termino = this.formFiltroData.value.termino;
+    }
+    if (this.formFiltroData.value.descricao) {
+      this.descricao = this.formFiltroData.value.descricao;
+    }
+
     this.getCursos();
   }
 
 
   getCursos() {
-    this.service.filtroPorDataOuDescricao(this.inicio, this.termino, this.descricao, this.page, this.size).subscribe(
+    this.service.filtroPorDataOuDescricao(this.inicio, this.termino, this.descricao, this.page, this.size, this.sort, this.order).subscribe(
       data => {
         this.cursos = data as any;
         this.json = data;
         this.cursos = this.json.content;
         this.totalElements = this.json.totalElements;
         this.pages = new Array(this.json['totalPages'])
+        console.log(this.json)
       },
       (error) => {
         console.log(error.error)
@@ -102,6 +131,7 @@ export class ConsultarCursosComponent implements OnInit {
             this.ngOnInit();
           },
           (e) => {
+            alert(e.error)
             console.log(e);
           }
         )

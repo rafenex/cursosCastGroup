@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Service;
 
 import br.com.castgroup.cursos.entities.Categoria;
@@ -158,18 +159,23 @@ public class CursoService {
 		Predicate[]predicateArr = new Predicate[predicates.size()];
 		predicates.toArray(predicateArr);
 		cq.where(predicateArr);
-		cq.orderBy(cb.desc(cursoRoot.get("inclusao")));
+	//	cq.orderBy(cb.desc(cursoRoot.get("inclusao")));
+		cq.orderBy(QueryUtils.toOrders(pagina.getSort(), cursoRoot, cb));
 		
+		
+		// Esta consulta busca o Curso conforme o Limite da Página
 		List<Curso> result = em.createQuery(cq).setFirstResult((int) pagina.getOffset()).setMaxResults(pagina.getPageSize()).getResultList();
+	
 		
-		// Create Count Query
+
+		// Cria consulta de contagem
         CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
         Root<Curso> cursosRootCount = countQuery.from(Curso.class);
         countQuery.select(cb.count(cursosRootCount)).where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
         
-       // Fetches the count of all Cursos as per given criteria
+        // Busca a contagem de todos os Cursos de acordo com os critérios fornecidos
         Long count = em.createQuery(countQuery).getSingleResult();
-        
+                
         Page<Curso> result1 = new PageImpl<>(result, pagina, count);
         return result1;
 	

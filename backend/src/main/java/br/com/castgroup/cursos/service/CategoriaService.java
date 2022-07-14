@@ -17,5 +17,9 @@ public class CategoriaService {
 		// TODO Auto-generated method stub
 		return categoriaRepository.findAll();
 	}
+	
+	public void cadastrar(Categoria categoria) {
+		categoriaRepository.save(categoria);		
+	}
 
 }

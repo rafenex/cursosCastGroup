@@ -46,6 +46,7 @@
       <th>Início</th>
       <th>Término</th>
       <th>Alunos</th>
+      <th>Status</th>
       <th class="text-center">Ações</th>
 
     </tr>
@@ -57,45 +58,40 @@
       <td>{{c.inicio | date : 'dd/MM/yyyy'}}</td>
       <td>{{c.termino | date : 'dd/MM/yyyy'}}</td>
       <td>{{c.quantidadeAlunos}}</td>
+      <td *ngIf="!c.finalizado">Em andamento</td>
+      <td *ngIf="c.finalizado">Finalizado</td>
       <td class="text-center">
-        <button *ngIf="!c.finalizado" class="btn btn-dark btn-sm botaoeditar"
-          [routerLink]="['/editar-cursos',c.id_curso]">Editar</button>
+        <button class="btn btn-dark btn-sm botaoeditar" [routerLink]="['/editar-cursos',c.id_curso]">Editar</button>
         &nbsp;
-        <!-- *ngIf="!c.finalizado" -->
         <!-- <button class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)" [disabled]="c.finalizado">Excluir</button> -->
-
-        <button *ngIf="c.finalizado" class="btn btn-light btn-sm" (click)="excluir(c.id_curso)"
-          [disabled]="c.finalizado">Finalizado</button>
-
-        <button *ngIf="!c.finalizado" class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)"
-          [disabled]="c.finalizado">Excluir</button>
-
-
-
+        <button class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)">Excluir</button>
 
       </td>
     </tr>
   </tbody>
   <tfoot>
     <tr>
-      <td colspan=" 6">Registros da página: {{size}}
+      <td colspan=" 6">Registros da página: {{cursos.length | filter : filtro}}
 
       </td>
     </tr>
-    <!-- <tr>
-      <td colspan=" 6">
-        <button class="btn btn-dark btn-sm" (click)="relatorio()">Relatorio em PDF</button>
-      </td>
-    </tr> -->
   </tfoot>
 </table>
 
 
-<div class="row col-md-3">
+
+<div class="row col-md-12">
+
   <nav aria-label="Page navigation example">
     <ul class="pagination">
+
       <li *ngFor="let p of pages; let i=index" class="page-item">
         <a class="page-link" href="" (click)="setPage(i,$event)">{{i+1}}</a>
+      </li>
+      <li class="mt-1">&nbsp; &nbsp; &nbsp; &nbsp;
+        <a (click)="setOrder('asc',$event)" href="#"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
+        &nbsp;
+        <a (click)="setOrder('desc',$event)" href="#"><i class="fa fa-arrow-down" aria-hidden="true"></i></a>
       </li> &nbsp; &nbsp; &nbsp; &nbsp;
       <li>
         <select class="form-select" [(ngModel)]="size" (change)="getSelectedSkill()">
@@ -104,10 +100,21 @@
           <option [ngValue]="15">15</option>
           <option [ngValue]="totalElements">Todos</option>
         </select>
-      </li>
+      </li>&nbsp; &nbsp; &nbsp; &nbsp;
+      <li>
+        <select class="form-select" [(ngModel)]="sort" (change)="getSelectedSort()">
+          <option [ngValue]="'inclusao'">Inclusão</option>
+          <option [ngValue]="'descricao'">Descrição</option>
+          <option [ngValue]="'inicio'">Inicio</option>
+          <option [ngValue]="'termino'">Término</option>
+          <option [ngValue]="'categoria'">Categoria</option>
+        </select>
+      </li>&nbsp; &nbsp; &nbsp; &nbsp;
     </ul>
   </nav>
 </div>
+
+
 
 
 <div class="row">

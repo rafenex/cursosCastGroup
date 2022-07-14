@@ -107,8 +107,6 @@ public class CursoController {
 		}	
 	}
 	
-	
-
 
 		
 	@ApiOperation("Serviço para filtrar cursos")
@@ -117,27 +115,11 @@ public class CursoController {
 							   @RequestParam(required = false) String descricao,
 							   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
 							   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino,
-							   @PageableDefault(direction = Direction.ASC, page = 0, size = 3)
+							   @PageableDefault(direction = Direction.ASC, page = 0, size = 10)
 							   Pageable paginacao){
 			return cursoService.filtrar(descricao, inicio, termino, paginacao);	
 	}
 
-
-	
-//	@ApiOperation("Serviço para filtrar cursos")
-//	@GetMapping(value="/filtro")
-//	public List<Curso> listar(
-//							   @RequestParam(required = false) String descricao,
-//							   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
-//							   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate termino,
-////							   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate termino,
-//							   @PageableDefault(direction = Direction.ASC, page = 0, size = 5)
-//							   Pageable paginacao){
-//			return cursoService.filtrar(descricao, inicio, termino);
-//
-//	
-//	
-//	}
 
 
 }
