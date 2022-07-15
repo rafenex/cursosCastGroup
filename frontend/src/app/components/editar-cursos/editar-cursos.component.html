@@ -8,7 +8,7 @@
   </div>
   <div class="row mb-3">
     <div class="class col-md-6">
-      <label> Descrição:</label>
+      <label> Descrição:*</label>
       <input type="text" class="form-control" formControlName="descricao" />
       <div class="text-danger" *ngIf="form.descricao.touched && form.descricao.invalid">
         <span *ngIf="form.descricao.errors.required">
@@ -20,13 +20,24 @@
   </div>
   <div class="row mb-3">
     <div class="col-md-3">
-      <label>Data de início:</label>
+      <label>Data de início:*</label>
       <input type="date" class="form-control" formControlName="inicio" />
-
+      <div class="text-danger" *ngIf="form.inicio.touched && form.inicio.invalid">
+        <span *ngIf="form.inicio.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, informe a data de início.
+        </span>
+      </div>
     </div>
     <div class="col-md-3">
-      <label>Data de término:</label>
+      <label>Data de término:*</label>
       <input type="date" class="form-control" formControlName="termino" />
+      <div class="text-danger" *ngIf="form.termino.touched && form.termino.invalid">
+        <span *ngIf="form.termino.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, informe a data de término.
+        </span>
+      </div>
     </div>
   </div>
 
@@ -34,11 +45,17 @@
 
   <div class="row mb-3">
     <div class="class col-md-3">
-      <label>Categoria: </label>
+      <label>Categoria:* </label>
       <select class="form-select" formControlName="id_categoria" required="true" [(ngModel)]="categoria">
         <option *ngFor="let c of categorias" value="{{c.id_categoria}}">
           {{c.categoria}}</option>
       </select>
+      <div class="text-danger" *ngIf="form.id_categoria.touched && form.id_categoria.invalid">
+        <span *ngIf="form.id_categoria.errors.required">
+          <i class="fa fa-exclamation-circle"></i>
+          Por favor, informe a categoria.
+        </span>
+      </div>
     </div>
 
     <div class="class col-md-3">
@@ -55,7 +72,8 @@
 
   <div class="row mb-3">
     <div class="col-md-6">
-      <input type="submit" [disabled]="!formEdicao.valid" class="btn btn-dark" value="Atualizar" />
+      <!-- <input type="submit" [disabled]="!formEdicao.valid" class="btn btn-dark" value="Atualizar" /> -->
+      <input type="submit" class="btn btn-dark" value="Atualizar" />
 
       &nbsp;
 

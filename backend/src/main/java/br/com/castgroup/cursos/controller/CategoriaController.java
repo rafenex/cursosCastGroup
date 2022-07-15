@@ -17,6 +17,7 @@ import br.com.castgroup.cursos.entities.Categoria;
 import br.com.castgroup.cursos.service.CategoriaService;
 import io.swagger.annotations.ApiOperation;
 @RestController
+@CrossOrigin
 @RequestMapping("/api/categorias")
 public class CategoriaController {
 	
@@ -25,7 +26,6 @@ public class CategoriaController {
 	CategoriaService categoriaService;
 	
 	@ApiOperation("Serviço para listar categorias")
-	@CrossOrigin
 	@GetMapping
 	public List<Categoria> listarCursos() {		
 		return categoriaService.acharTodos();

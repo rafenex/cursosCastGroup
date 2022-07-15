@@ -36,8 +36,6 @@ public class CursoController {
 	@Autowired
 	CursoService cursoService;
 	
-
-
 	@ApiOperation("Serviço para cadastrar cursos")
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String>cadastrar(@RequestBody Curso request){
@@ -45,9 +43,10 @@ public class CursoController {
 			cursoService.cadastrarCurso(request);
 			return ResponseEntity.status(HttpStatus.CREATED).body("Curso cadastrado com sucesso");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
-	}
+	}	
+	
 	
 	@ApiOperation("Serviço para atualizar cursos")
 	@PutMapping(value = "/{id_curso}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +55,7 @@ public class CursoController {
 			cursoService.atualizarCurso(request, id_curso);
 			return ResponseEntity.status(HttpStatus.CREATED).body("Curso atualizado com sucesso");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 	

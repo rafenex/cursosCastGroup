@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.castgroup.cursos.dtos.LogDTO;
 import br.com.castgroup.cursos.repository.LogRepository;
+import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin
 @RestController
@@ -23,6 +24,7 @@ public class LogController {
 	LogRepository logRepository;
 
 
+	@ApiOperation("Serviço para listar logs")
 	@GetMapping
 	public Page<LogDTO> listar(
 							   @RequestParam(required = false) String descricao,

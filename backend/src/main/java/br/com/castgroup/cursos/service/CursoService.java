@@ -44,7 +44,7 @@ public class CursoService {
 
 	@Autowired
 	CategoriaRepository categoriaRepository;
-	
+
 	@PersistenceContext
 	EntityManager em;
 
@@ -53,15 +53,14 @@ public class CursoService {
 	public void usuarioLogado(Usuario usuario) {
 		usuarioLogado = usuario;
 	}
-		
 
 	@Transactional
 	public void cadastrarCurso(Curso curso) {
+		validaCampos(curso);
 		validaData(curso);
 		existeCategoria(curso);
 		existeDescricao(curso);
 		finalizado(curso);
-		validaCampos(curso);
 		@SuppressWarnings("deprecation")
 		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso, "Cadastrou Curso",
 				usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
@@ -70,11 +69,14 @@ public class CursoService {
 		cursoRepository.save(curso);
 	}
 
-
-
 	@Transactional
 	public void atualizarCurso(Curso request, Integer id_curso) {
+		validaCampos(request);
+		validaDataUpdate(request);
+		existeDescricaoUpdate(request);
 		Optional<Curso> item = cursoRepository.findById(id_curso);
+		System.out.println(item.get().getDescricao());
+
 		if (item.isEmpty()) {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
@@ -82,9 +84,8 @@ public class CursoService {
 			if (curso.getFinalizado()) {
 				throw new RuntimeException("Curso finalizado não pode ser editado");
 			}
-			existeDescricao(curso);
-			validaDataUpdate(request);
-			existeDescricaoUpdate(request);
+			
+		
 			request.setInclusao(curso.getInclusao());
 			BeanUtils.copyProperties(request, curso);
 
@@ -117,13 +118,12 @@ public class CursoService {
 			cursoRepository.delete(curso);
 		}
 	}
-	
-	// GET
+
 	public List<Curso> acharTodos() {
 		checarTerminoCurso();
 		return cursoRepository.findAll();
 	}
-	
+
 	public List<Curso> listarPorData(LocalDate inicio, LocalDate termino) {
 		return cursoRepository.cursosPorData(inicio, termino);
 	}
@@ -144,62 +144,63 @@ public class CursoService {
 		return listaDeCursos;
 	}
 
-
-	public Page<Curso> filtrar(String descricao, LocalDate inicio, LocalDate termino, Pageable pagina){
-		CriteriaBuilder cb = em.getCriteriaBuilder(); //constroi CB
-		CriteriaQuery<Curso> cq = cb.createQuery(Curso.class); //QUERY CURSO
+	public Page<Curso> filtrar(String descricao, LocalDate inicio, LocalDate termino, Pageable pagina) {
+		CriteriaBuilder cb = em.getCriteriaBuilder(); // constroi CB
+		CriteriaQuery<Curso> cq = cb.createQuery(Curso.class); // QUERY CURSO
 		Root<Curso> cursoRoot = cq.from(Curso.class); // SELECT * FROM CURSO
-		List<Predicate>predicates = new ArrayList<>(); //pode ser vazia ou nao
+		List<Predicate> predicates = new ArrayList<>(); // pode ser vazia ou nao
 		if (descricao != null) {
 			Predicate descricaoPredicate = cb.equal(cursoRoot.get("descricao"), descricao);
 			predicates.add(descricaoPredicate);
 		}
-		if (inicio !=null) {
+		if (inicio != null) {
 			Predicate inicioPredicate = cb.greaterThanOrEqualTo(cursoRoot.get("inicio"), inicio);
 			predicates.add(inicioPredicate);
 		}
-		if (termino !=null) {
+		if (termino != null) {
 			Predicate descricaoPredicate = cb.lessThanOrEqualTo(cursoRoot.get("termino"), termino);
 			predicates.add(descricaoPredicate);
-		}				
-		Predicate[]predicateArr = new Predicate[predicates.size()];
+		}
+		Predicate[] predicateArr = new Predicate[predicates.size()];
 		predicates.toArray(predicateArr);
 		cq.where(predicateArr);
-	//	cq.orderBy(cb.desc(cursoRoot.get("inclusao")));
+		// cq.orderBy(cb.desc(cursoRoot.get("inclusao")));
 		cq.orderBy(QueryUtils.toOrders(pagina.getSort(), cursoRoot, cb));
-		
-		
+
 		// Esta consulta busca o Curso conforme o Limite da Página
-		List<Curso> result = em.createQuery(cq).setFirstResult((int) pagina.getOffset()).setMaxResults(pagina.getPageSize()).getResultList();
-	
-		
+		List<Curso> result = em.createQuery(cq).setFirstResult((int) pagina.getOffset())
+				.setMaxResults(pagina.getPageSize()).getResultList();
 
 		// Cria consulta de contagem
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        Root<Curso> cursosRootCount = countQuery.from(Curso.class);
-        countQuery.select(cb.count(cursosRootCount)).where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-        
-        // Busca a contagem de todos os Cursos de acordo com os critérios fornecidos
-        Long count = em.createQuery(countQuery).getSingleResult();
-                
-        Page<Curso> result1 = new PageImpl<>(result, pagina, count);
-        return result1;
-	
-        
-	}	
- 
+		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+		Root<Curso> cursosRootCount = countQuery.from(Curso.class);
+		countQuery.select(cb.count(cursosRootCount))
+				.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
 
-	
-	//Validações		
-	
+		// Busca a contagem de todos os Cursos de acordo com os critérios fornecidos
+		Long count = em.createQuery(countQuery).getSingleResult();
+
+		Page<Curso> result1 = new PageImpl<>(result, pagina, count);
+		return result1;
+
+	}
+
+	// Validações
+
 	private void validaCampos(Curso request) {
-		if((request.getDescricao().isEmpty())||
-			(request.getDescricao().isEmpty()||
-			(request.getInicio() == null)||
-			(request.getTermino() == null)||
-			(request.getCategoria() == null))) {
-			throw new RuntimeException("Preencher os campos obrigatórios");
+		if ((request.getDescricao().isEmpty())) {
+			throw new RuntimeException("O campo descrição é obrigatório");
 		}
+		if ((request.getInicio() == null)) {
+			throw new RuntimeException("O campo início é obrigatório");
+		}
+		if ((request.getTermino() == null)) {
+			throw new RuntimeException("O campo término é obrigatório");
+		}
+		if ((request.getCategoria().getId_categoria() == null)) {
+			throw new RuntimeException("O campo categoria é obrigatório");
+		}
+
 	}
 
 	private void validaData(Curso request) {
@@ -235,37 +236,26 @@ public class CursoService {
 			throw new RuntimeException("Existe(m) curso(s) planejados(s) dentro do período informado.");
 		}
 	}
-	
+
 	private void existeCategoria(Curso request) {
 		Optional<Categoria> categoria = categoriaRepository.findById(request.getCategoria().getId_categoria());
 		if (categoria.isEmpty()) {
 			throw new RuntimeException("Não existe a categoria informada");
 		}
+
 	}
 
 	private void existeDescricaoUpdate(Curso request) {
 		List<Curso> findByDescricao = cursoRepository.findByDescricao(request.getDescricao());
+		List<Curso> naoFinalizado = cursoRepository.findByDescricaoAndFinalizado(request.getDescricao(), false);
 		System.out.println(findByDescricao.size());
-		if (findByDescricao.size() >= 2) {
+		if (findByDescricao.size() >= 1) {
 			Boolean valido = false;
 			for (Curso curso : findByDescricao) {
 				if (curso.getId_curso().equals(request.getId_curso())) {
 					valido = true;
 				}
-			}
-			if (!valido)
-				throw new RuntimeException("Curso já cadastrado.");
-		}
-		
-		
-		
-		
-		
-
-		if (findByDescricao.size() == 1) {
-			Boolean valido = false;
-			for (Curso curso : findByDescricao) {
-				if (curso.getId_curso().equals(request.getId_curso())) {
+				if (naoFinalizado.size() < 1) {
 					valido = true;
 				}
 			}
@@ -276,13 +266,13 @@ public class CursoService {
 
 	private void existeDescricao(Curso curso) {
 		List<Curso> findByDescricao = cursoRepository.findByDescricao(curso.getDescricao());
-		List<Curso> naoFinalizado = cursoRepository.findByDescricaoAndFinalizado(curso.getDescricao(),false);
+		List<Curso> naoFinalizado = cursoRepository.findByDescricaoAndFinalizado(curso.getDescricao(), false);
 
-		if ((findByDescricao.size() > 0) && (naoFinalizado.size()>0)) {
+		if ((findByDescricao.size() > 0) && (naoFinalizado.size() > 0)) {
 			throw new RuntimeException("Curso já cadastrado.");
 		}
 	}
-	
+
 	public void checarTerminoCurso() {
 		List<Curso> lista = cursoRepository.findAll();
 		for (Curso curso : lista) {
@@ -291,7 +281,7 @@ public class CursoService {
 				cursoRepository.save(curso);
 			} else {
 				curso.setFinalizado(false);
-			}	
+			}
 		}
 	}
 
@@ -302,6 +292,5 @@ public class CursoService {
 			curso.setFinalizado(false);
 		}
 	}
-
 
 }

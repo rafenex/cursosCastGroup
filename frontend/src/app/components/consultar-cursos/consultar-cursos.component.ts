@@ -11,19 +11,19 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./consultar-cursos.component.css']
 })
 export class ConsultarCursosComponent implements OnInit {
-  order = 'asc';
-  termino: any;
-  inicio: any;
-  descricao: any;
+  order = "desc";
+  termino = "";
+  inicio = "";
+  descricao = "";
   mensagem = "";
   filtro = "";
   json: any;
   totalElements!: number;
-  page: any;
+  page: any = -1;
   pages: any[] = [];
   cursos: any[] = [];
-  size = 10;
-  sort = 'inclusao';
+  size: any = 10;
+  sort = "inclusao";
 
   constructor(private httpClient: HttpClient, private authHelper: AuthHelper, private service: ConsultarCursosService) {
 
@@ -87,23 +87,30 @@ export class ConsultarCursosComponent implements OnInit {
   resetar(): void {
     this.formFiltroData.reset();
     this.page = null;
-    this.descricao = null;
+    this.descricao = "";
     this.size = 10;
-    this.inicio = null;
-    this.termino = null;
+    this.inicio = "";
+    this.termino = "";
     this.getCursos();
   }
 
   onSubmit(): void {
-    if (this.formFiltroData.value.inicio) {
-      this.inicio = this.formFiltroData.value.inicio;
-    }
-    if (this.formFiltroData.value.termino) {
-      this.termino = this.formFiltroData.value.termino;
-    }
-    if (this.formFiltroData.value.descricao) {
-      this.descricao = this.formFiltroData.value.descricao;
-    }
+
+    // if (this.formFiltroData.value.inicio) {
+    //   this.inicio = this.formFiltroData.value.inicio;
+    // }
+    // if (this.formFiltroData.value.termino) {
+    //   this.termino = this.formFiltroData.value.termino;
+    // }
+    // if (this.formFiltroData.value.descricao) {
+    //   this.descricao = this.formFiltroData.value.descricao;
+    // }
+
+    this.inicio = this.formFiltroData.value.inicio!;
+    this.termino = this.formFiltroData.value.termino!;
+    this.descricao = this.formFiltroData.value.descricao!;
+
+
     this.getCursos();
 
   }

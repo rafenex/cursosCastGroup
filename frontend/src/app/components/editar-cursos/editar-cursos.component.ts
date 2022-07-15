@@ -28,7 +28,6 @@ export class EditarCursosComponent implements OnInit {
   quantidadeAlunos: any;
 
 
-
   constructor(private httpClient: HttpClient, private activeRoute: ActivatedRoute, private authHelper: AuthHelper) { }
 
   formEdicao = new FormGroup({
@@ -66,7 +65,7 @@ export class EditarCursosComponent implements OnInit {
         },
         e => {
           this.mensagem = e.error;
-          console.log(e);
+
         }
       )
     // window.location.href = "/editar-cursos/" + idCurso;

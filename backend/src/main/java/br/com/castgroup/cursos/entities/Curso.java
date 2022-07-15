@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,12 +20,12 @@ public class Curso {
 	private Integer id_curso;
 
 
-	@NotNull
+	@NotEmpty(message="Por favor preencher a descrição")
 	private String descricao;
 	
-	@NotNull(message= "O campo não pode ser nulo")
+	@NotNull 
 	private LocalDate inicio;
-	@NotNull(message= "O campo não pode ser nulo")
+	@NotNull 
 	private LocalDate termino;
 	
 	private Boolean finalizado;
@@ -33,7 +34,7 @@ public class Curso {
 	
 	@ManyToOne
 	@JoinColumn
-	@NotNull(message= "O campo não pode ser nulo")
+	@NotNull(message="O campo categoria é obrigatório")
 	private Categoria categoria;
 	
 	

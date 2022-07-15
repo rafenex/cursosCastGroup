@@ -61,10 +61,12 @@
       <td *ngIf="!c.finalizado">Em andamento</td>
       <td *ngIf="c.finalizado">Finalizado</td>
       <td class="text-center">
-        <button class="btn btn-dark btn-sm botaoeditar" [routerLink]="['/editar-cursos',c.id_curso]">Editar</button>
+        <button class="btn btn-dark btn-sm botaoeditar" [disabled]="c.finalizado"
+          [routerLink]="['/editar-cursos',c.id_curso]">Editar</button>
+        <!-- <button class="btn btn-dark btn-sm botaoeditar" [routerLink]="['/editar-cursos',c.id_curso]">Editar</button> -->
         &nbsp;
-        <!-- <button class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)" [disabled]="c.finalizado">Excluir</button> -->
-        <button class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)">Excluir</button>
+        <button class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)" [disabled]="c.finalizado">Excluir</button>
+        <!-- <button class="btn btn-dark btn-sm" (click)="excluir(c.id_curso)">Excluir</button> -->
 
       </td>
     </tr>

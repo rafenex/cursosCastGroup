@@ -54,7 +54,6 @@ export class CadastrarCursosComponent implements OnInit {
 
 
   onSubmit(): void {
-    console.log(this.formCadastro.value)
     let objeto: any = {
 
       descricao: this.formCadastro.value.descricao,
@@ -76,14 +75,8 @@ export class CadastrarCursosComponent implements OnInit {
         },
         e => {
           this.mensagem = e.error;
-          ;
-
         }
-
       )
-
-
-
   }
 
 }
