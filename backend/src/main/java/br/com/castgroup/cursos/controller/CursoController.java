@@ -99,7 +99,7 @@ public class CursoController {
 	@DeleteMapping(value = "/{id_curso}")
 	public ResponseEntity<String> deleteById(@PathVariable("id_curso") Integer id_curso) {		
 		try {
-			cursoService.deletarCursoPorId(id_curso);
+			cursoService.deletarCursoPorId(id_curso);		
 			return ResponseEntity.status(HttpStatus.OK).body("Curso deletado com sucesso");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

@@ -57,9 +57,10 @@ public class CursoService {
 	@Transactional
 	public void cadastrarCurso(Curso curso) {
 		validaCampos(curso);
-		validaData(curso);
-		existeCategoria(curso);
 		existeDescricao(curso);
+		validaData(curso);		
+		existeCategoria(curso);
+
 		finalizado(curso);
 		@SuppressWarnings("deprecation")
 		Log log = new Log(null, LocalDate.now(), LocalDate.now(), curso, "Cadastrou Curso",
@@ -71,27 +72,22 @@ public class CursoService {
 
 	@Transactional
 	public void atualizarCurso(Curso request, Integer id_curso) {
+		finalizado(request);
 		validaCampos(request);
-		validaDataUpdate(request);
 		existeDescricaoUpdate(request);
+		validaDataUpdate(request);
+		
+		existeCategoria(request);
 		Optional<Curso> item = cursoRepository.findById(id_curso);
-		System.out.println(item.get().getDescricao());
-
 		if (item.isEmpty()) {
 			throw new RuntimeException("Curso não encontrado");
 		} else {
 			Curso curso = item.get();
 			if (curso.getFinalizado()) {
 				throw new RuntimeException("Curso finalizado não pode ser editado");
-			}
-			
-		
+			}		
 			request.setInclusao(curso.getInclusao());
-			BeanUtils.copyProperties(request, curso);
-
-			finalizado(curso);
-
-			existeCategoria(curso);
+			BeanUtils.copyProperties(request, curso);	
 
 			@SuppressWarnings("deprecation")
 			Log log = new Log(null, item.get().getInclusao(), LocalDate.now(), curso, "Atualizou Curso",
@@ -112,7 +108,7 @@ public class CursoService {
 				throw new RuntimeException("Curso finalizado não pode ser excluido");
 			}
 			@SuppressWarnings("deprecation")
-			Log log = new Log(null, curso.getInclusao(), LocalDate.now(), curso, "Deletou Curso",
+			Log log = new Log(null, item.get().getInclusao(), LocalDate.now(), curso, "Deletou Curso",
 					usuarioRepository.getOne(usuarioLogado.getIdUsuario()));
 			logRepository.save(log);
 			cursoRepository.delete(curso);

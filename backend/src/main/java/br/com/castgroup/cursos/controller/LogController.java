@@ -24,19 +24,24 @@ public class LogController {
 	LogRepository logRepository;
 
 
+
+	
+
 	@ApiOperation("Serviço para listar logs")
 	@GetMapping
 	public Page<LogDTO> listar(
-							   @RequestParam(required = false) String descricao,
-							   @PageableDefault(sort="id_log", direction = Direction.DESC, page = 0, size = 5)
+							   @RequestParam(required = false) Integer id_curso,
+							   @PageableDefault(sort="id_log", direction = Direction.DESC, page = 0, size = 20)
 							   Pageable paginacao){
-			if(descricao == null) {
-				return logRepository.listarLogs(paginacao);
-			} else {
-				return logRepository.listarPorDescricao(paginacao, descricao);
-			}
+		if(id_curso == null) {
+			return logRepository.listarLogs(paginacao);
+		} else {
+	}
+		return logRepository.listarPorId(paginacao, id_curso);
 	
 	}
+
+
 
 
 

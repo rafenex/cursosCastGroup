@@ -48,6 +48,8 @@ export class CadastrarCursosComponent implements OnInit {
     quantidadeAlunos: new FormControl('')
   })
 
+
+
   get form(): any {
     return this.formCadastro.controls;
   }
@@ -61,6 +63,7 @@ export class CadastrarCursosComponent implements OnInit {
       termino: this.formCadastro.value.termino,
       categoria: { id_categoria: this.formCadastro.value.id_categoria },
       quantidadeAlunos: this.formCadastro.value.quantidadeAlunos
+
     }
 
 
@@ -70,8 +73,10 @@ export class CadastrarCursosComponent implements OnInit {
       { responseType: 'text' })
       .subscribe(
         data => {
-          this.mensagem = data;
+          alert(data);
+
           this.formCadastro.reset();
+          window.location.href = "/consultar-cursos";
         },
         e => {
           this.mensagem = e.error;

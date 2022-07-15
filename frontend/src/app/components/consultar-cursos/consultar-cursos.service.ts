@@ -13,13 +13,13 @@ export class ConsultarCursosService {
 
   filtroPorDataOuDescricao(inicio: any, termino: any, descricao: any, page: any, size: number, sort: string, order: string) {
     var url = environment.apiUrl + '/cursos/filtro?'
-    if (inicio != "") {
+    if ((inicio != "") && (inicio != null)) {
       url += "&inicio=" + inicio;
     }
-    if (termino != "") {
+    if ((termino != "") && (termino != null)) {
       url += "&termino=" + termino;
     }
-    if (descricao != "") {
+    if ((descricao != "") && (descricao != null)) {
       console.log(descricao);
       url += "&descricao=" + descricao;
     }
@@ -30,7 +30,7 @@ export class ConsultarCursosService {
       url += "," + order;
     }
 
-    if (page != -1) {
+    if ((page != -1) && (page != null)) {
       url += "&page=" + page;
     }
     if (size != -1) {

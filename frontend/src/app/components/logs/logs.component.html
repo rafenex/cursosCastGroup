@@ -16,7 +16,7 @@
 
 <div class="row">
   <div class="col-md-3">
-    <input type="text" class="form-control" [(ngModel)]="descricao" placeholder="Nome do curso" /> &nbsp;
+    <input type="text" class="form-control" [(ngModel)]="descricao" placeholder="ID do curso" /> &nbsp;
   </div>
   <div class="col-md-3">
     <input type="button" (click)="setDesc(descricao, size)" class="btn btn-dark" value="Procurar" />
@@ -32,7 +32,7 @@
   </li>
   <div>
     <select class="form-select" [(ngModel)]="size">
-      <option value="0">Itens por página</option>
+      <option value="0" disabled>Itens por página</option>
       <option value="5">5</option>
       <option value="10">10</option>
       <option value="20">20</option>
@@ -50,11 +50,11 @@
     <tr>
       <th>ID Log</th>
       <th>ID Curso</th>
-      <th>Curso</th>
+
       <th>Usuario</th>
       <th>Ação</th>
-      <th>Inclusão</th>
-      <th>Ultima Atualização</th>
+      <th>Cadastro</th>
+      <th>Atualização</th>
 
 
     </tr>
@@ -63,7 +63,7 @@
     <tr *ngFor="let l of logs">
       <td>{{l.id_log}}</td>
       <td>{{l.id_curso}}</td>
-      <td>{{l.descricao}}</td>
+
       <td>{{l.nome}}</td>
       <td>{{l.acao}}</td>
       <td>{{l.inclusao | date : 'dd/MM/yyyy'}}</td>

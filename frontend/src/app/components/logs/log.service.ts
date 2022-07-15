@@ -11,9 +11,13 @@ export class LogService {
 
   getLogsService(page: number, descricao: string, size: number) {
 
-    if (descricao == null) { return this.httpClient.get(environment.apiUrl + '/logs?page=' + page + '&size=' + size) }
+    if (descricao == null) {
+      return this.httpClient.get(environment.apiUrl + '/logs?page=' + page + '&size=' + size)
+      console.log(descricao)
+    }
     else {
-      return this.httpClient.get(environment.apiUrl + '/logs?descricao=' + descricao + '&page=' + page + '&size=' + size)
+      console.log(descricao)
+      return this.httpClient.get(environment.apiUrl + '/logs?id_curso=' + descricao + '&page=' + page + '&size=' + size)
     }
 
 

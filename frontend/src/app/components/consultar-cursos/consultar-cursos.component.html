@@ -41,6 +41,7 @@
 <table class="table table-hover table-sm table-bordered">
   <thead>
     <tr>
+      <th>#</th>
       <th>Descrição</th>
       <th>Categoria</th>
       <th>Início</th>
@@ -53,6 +54,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let c of cursos | filter : filtro">
+      <td>{{c.id_curso}}</td>
       <td>{{c.descricao}}</td>
       <td>{{c.categoria.categoria}}</td>
       <td>{{c.inicio | date : 'dd/MM/yyyy'}}</td>
@@ -73,7 +75,9 @@
   </tbody>
   <tfoot>
     <tr>
-      <td colspan="7">Registros da página: {{cursos.length | filter : filtro}}</td>
+      <td colspan="3">Registros da página: {{cursos.length | filter : filtro}}</td>
+      <td colspan="4">Total de Registros: {{totalElements}}</td>
+
     </tr>
   </tfoot>
 </table>
@@ -83,17 +87,12 @@
 <div class="row col-md-12">
 
   <nav aria-label="Page navigation example">
-    <ul class="pagination">
 
-      <li *ngFor="let p of pages; let i=index" class="page-item">
+    <ul class="pagination">
+      <li *ngFor="let p of pages; let i=index" class="page-item mt-4">
         <a class="page-link" href="" (click)="setPage(i,$event)">{{i+1}}</a>
-      </li>
-      <li class="mt-1">&nbsp; &nbsp; &nbsp; &nbsp;
-        <a (click)="setOrder('asc',$event)" href="#"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
-        &nbsp;
-        <a (click)="setOrder('desc',$event)" href="#"><i class="fa fa-arrow-down" aria-hidden="true"></i></a>
-      </li> &nbsp; &nbsp; &nbsp; &nbsp;
-      <li>
+      </li>&nbsp; &nbsp; &nbsp; &nbsp;
+      <li>Itens por página:
         <select class="form-select" [(ngModel)]="size" (change)="getSelectedSkill()">
           <option [ngValue]="5">5</option>
           <option [ngValue]="10">10</option>
@@ -101,9 +100,9 @@
           <option [ngValue]="totalElements">Todos</option>
         </select>
       </li>&nbsp; &nbsp; &nbsp; &nbsp;
-      <li>
+      <li>Orderdar por:
         <select class="form-select" [(ngModel)]="sort" (change)="getSelectedSort()">
-          <option [ngValue]="'inclusao'">Inclusão</option>
+          <option [ngValue]="'inclusao'">Cadastro</option>
           <option [ngValue]="'descricao'">Descrição</option>
           <option [ngValue]="'inicio'">Inicio</option>
           <option [ngValue]="'termino'">Término</option>
@@ -111,6 +110,11 @@
           <option [ngValue]="'finalizado'">Status</option>
         </select>
       </li>&nbsp; &nbsp; &nbsp; &nbsp;
+      <li class="mt-4">
+        <a (click)="setOrder('asc',$event)" href="#"><i class="fa fa-arrow-up" aria-hidden="true"></i></a>
+        &nbsp;
+        <a (click)="setOrder('desc',$event)" href="#"><i class="fa fa-arrow-down" aria-hidden="true"></i></a>
+      </li> &nbsp; &nbsp; &nbsp; &nbsp;
     </ul>
   </nav>
 </div>
@@ -119,10 +123,10 @@
 
 
 <div class="row">
-  <div class="col-md-2 mb-3">
+  <div class="col-md-12 mb-3 d-flex justify-content-between">
     <button class="btn botaodevoltar" routerLink="/pagina-inicial">Voltar</button>
-  </div>
-  <div class="col-md-1 mb-3 right">
-    <button class="btn botaodevoltar form-control" routerLink="/logs">Logs</button>
+
+    <button class="btn botaodevoltar" routerLink="/logs">Logs</button>
+
   </div>
 </div>

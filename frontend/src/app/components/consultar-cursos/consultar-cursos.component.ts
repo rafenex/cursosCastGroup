@@ -86,6 +86,10 @@ export class ConsultarCursosComponent implements OnInit {
 
   resetar(): void {
     this.formFiltroData.reset();
+
+    this.formFiltroData.value.descricao = "";
+    this.formFiltroData.value.inicio = "";
+    this.formFiltroData.value.termino = "";
     this.page = null;
     this.descricao = "";
     this.size = 10;
@@ -96,15 +100,6 @@ export class ConsultarCursosComponent implements OnInit {
 
   onSubmit(): void {
 
-    // if (this.formFiltroData.value.inicio) {
-    //   this.inicio = this.formFiltroData.value.inicio;
-    // }
-    // if (this.formFiltroData.value.termino) {
-    //   this.termino = this.formFiltroData.value.termino;
-    // }
-    // if (this.formFiltroData.value.descricao) {
-    //   this.descricao = this.formFiltroData.value.descricao;
-    // }
 
     this.inicio = this.formFiltroData.value.inicio!;
     this.termino = this.formFiltroData.value.termino!;
@@ -130,7 +125,7 @@ export class ConsultarCursosComponent implements OnInit {
         this.cursos = this.json.content;
         this.totalElements = this.json.totalElements;
         this.pages = new Array(this.json['totalPages'])
-        console.log(this.json)
+
       },
       (error) => {
         console.log(error.error)
